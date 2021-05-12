@@ -1,4 +1,4 @@
-Use SM-A3-Postprocess.py to Generate output figures. 
+Use SM-A3-Postprocess.py to generate output figures. 
 
 For now, the yaml file to use is given in 'SM-A3-Postprocess.py'. It could easily be made an argument upon calling the script. 
 
