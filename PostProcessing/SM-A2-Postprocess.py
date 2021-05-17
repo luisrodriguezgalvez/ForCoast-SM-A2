@@ -459,7 +459,7 @@ if len(alarmtab)> 20:
 # Building a list of alarm dates and files
 filenames = [figdir+'AllTracks_Alarm'+str(ti)+'.png' for ti,t in enumerate(alarmtab)]
 
-with open('AlarmsList.csv', 'w') as f:
+with open(figdir+'AlarmsList.csv', 'w') as f:
     writer = csv.writer(f, delimiter='\t')
     writer.writerows(zip(alarmtab,filenames))
 
