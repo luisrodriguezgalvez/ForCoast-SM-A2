@@ -1,0 +1,35 @@
+experience: Eforie
+
+# GENERAL OPTIONS
+run3D: True
+nesting: True
+stokes: True
+hdiffusion: True
+vdiffusion: False
+beaching: 1                    # 0: do nothing, 1: freeze, 2: un-beach (push back)
+
+# INPUT FILES
+PHY_path: "../eforie/PHY/"
+WAV_path: "../eforie/WAV/"
+
+# SIMULATION DATE
+sdate: "2018-12-02"
+simlength: 5                   # days
+dt: 10                         # computing time step in minutes
+
+# POLLUTANT RELEASE
+npart: 5
+x0: [28.6803]
+y0: [44.2201]
+z0: [0.5]
+repeatdt: 1440
+
+# OUTPUT
+out_filename: "test.nc"
+savedt: 10                     # minuts
+detection: False
+maxage: 432000                  # minuts after which a pollutant becomes inoffensive
+targetx: [28.6611,28.6617]
+targety: [44.0535,44.0553]
+
+# ARTHUR's POST-PROCESSING
