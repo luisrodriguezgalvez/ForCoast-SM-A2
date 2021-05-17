@@ -50,10 +50,29 @@ from cartopy.feature import NaturalEarthFeature
 import cartopy.crs as ccrs
 import os
 import yaml
+import csv
+import sys, getopt
 
 from shapely.geometry.polygon import Polygon
 
-USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
+USER_YAML_FILE = ''
+   
+argv = sys.argv[1:]
+try:
+    opts, args = getopt.getopt(argv,"hy:",["yamlfile="])
+except getopt.GetoptError:
+    print ('SM-A2-Postprocess.py -y <yamlfile>')
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == '-h':
+        print ('SM-A2-Postprocess.py -y <yamlfile>')
+        sys.exit()
+    elif opt in ("-y", "--yamlfile"):
+        USER_YAML_FILE = arg
+print ('yaml file is', USER_YAML_FILE)
+
+
+#USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
 #USER_YAML_FILE='SMA2-PostProcess-Eforie.yaml'
 
 with open(USER_YAML_FILE) as f:
@@ -436,7 +455,15 @@ if len(alarmtab)> 20:
     raise SystemExit("You probably have too much alarms, revise Alarm parameters!")
 
 
-# Maps built for date with Alarm thresolds passed. 
+
+# Building a list of alarm dates and files
+filenames = [figdir+'AllTracks_Alarm'+str(ti)+'.png' for ti,t in enumerate(alarmtab)]
+
+with open('AlarmsList.csv', 'w') as f:
+    writer = csv.writer(f, delimiter='\t')
+    writer.writerows(zip(alarmtab,filenames))
+
+# Maps built for dates with Alarm thresolds passed. 
 
 # In[17]:
 
@@ -452,7 +479,7 @@ scats=[]
 scatpolys=[]
 patches= []
 
-for ti,t in enumerate(alarmtab) : 
+for ti,t in enumerate(alarmtab): 
     plt.close()
     fig = plt.figure(figsize=(10,10))
     ax1   = start_axes(title='Map1', extent=exts[extformap], fig=fig)
