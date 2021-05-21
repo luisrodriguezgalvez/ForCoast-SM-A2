@@ -14,12 +14,29 @@ import time
 from forcoast_loaders import *
 from forcoast_kernels import *
 import yaml
+import os
+from pathlib import Path
+import sys
+
+argv = sys.argv[1:]
 
 # OPTIONS
 with open('pilot7.yaml') as f:
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 
+# Replace options from yml file with options passed from command line (example; code could be improved) 
+# Example: 
+# - Windows: python forcoast.py 2021-02-01 4 c:\data
+# - Linux: python forcoast.py 2021-02-01 4 /data
+if not argv:
+    print("Use input from yml file")
+else:
+    print("Replace selected input with input from command line")
+    options['sdate'] = argv[0]
+    options['simlength'] = int(argv[1])
+    options['PHY_path'] = argv[2]
+    options['out_filename'] = options['PHY_path'] + '/' + "EforieParticles.nc"
 
 # LOAD DATA
 if options['run3D']:
@@ -28,10 +45,12 @@ else:
     print('running in 2D')
 
 # EFORIE
-ufiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_U_*.nc*'))
-vfiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_V_*.nc*'))
-wfiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_W_*.nc*'))
-mesh_mask = options['PHY_path'] + '2_mesh_mask.nc'
+ufiles = sorted(glob(str(options['PHY_path'] + '/' + '2_EFORIE_1h_*_grid_U_*.nc')))
+vfiles = sorted(glob(str(options['PHY_path'] + '/' + '2_EFORIE_1h_*_grid_V_*.nc')))
+wfiles = sorted(glob(str(options['PHY_path'] + '/' + '2_EFORIE_1h_*_grid_W_*.nc')))
+
+mesh_mask = str(Path(options['PHY_path']  + '/' + '2_mesh_mask.nc'))
+
 indices = {'lon': range(1,107), 'lat': range(2,211)} # NEMO puts zero along the (ghost) boundaries
 EFORIE=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 
@@ -39,17 +58,17 @@ if options['nesting']==True:
     print('using 3 nested grids')
 
     # NWS
-    ufiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_U_*.nc*'))
-    vfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_V_*.nc*'))
-    wfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_W_*.nc*'))
+    ufiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1h_*_grid_U_*.nc*'))
+    vfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1h_*_grid_V_*.nc*'))
+    wfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1h_*_grid_W_*.nc*'))
     mesh_mask = options['PHY_path'] + '1_mesh_mask.nc'
     indices = {'lon': range(1,425), 'lat': range(3,346)} # NEMO puts zero along the (ghost) boundaries
     NWS=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 
     # BSFS
-    ufiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_U_*.nc*'))
-    vfiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_V_*.nc*'))
-    wfiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_W_*.nc*'))
+    ufiles = sorted(glob(options['PHY_path']+'*/*/BS_1h_*_grid_U_*.nc*'))
+    vfiles = sorted(glob(options['PHY_path']+'*/*/BS_1h_*_grid_V_*.nc*'))
+    wfiles = sorted(glob(options['PHY_path']+'*/*/BS_1h_*_grid_W_*.nc*'))
     mesh_mask = options['PHY_path'] + 'mesh_mask_59levels.nc'
     BSFS=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 
@@ -182,22 +201,23 @@ if options['detection']:
 #plt=plotTrajectoriesFile('EforieParticles.nc')
 
 ## PCOLOR TRAJECTORIES OVER TMASK
-import xarray as xr
-import matplotlib.pyplot as plt
-data_xarray = xr.open_dataset('EforieParticles.nc')  # trajectories, time, lon, lat, z, prevlon, prevlat, prevdep, beached [obs=timestep, traj=particle]
-x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
-fig,ax=plt.subplots(1,3)
-for sp in range(3):
-    dx=fieldset.gridset.grids[sp].lon[1]-fieldset.gridset.grids[sp].lon[0] ; dy=fieldset.gridset.grids[sp].lat[1]-fieldset.gridset.grids[sp].lat[0]
-    ax[sp].pcolormesh(fieldset.gridset.grids[sp].lon-(dx/2), fieldset.gridset.grids[sp].lat-(dy/2), fieldset.tmask[sp].data[0,0,:,:], shading='auto')
-    ax[sp].plot(x.T,y.T)
-    #plot dikes
-    ax[sp].plot(np.array([28.671237945556641,28.673706054687500,28.673706054687500,28.676176071166992,28.681114196777344,28.681114196777344,28.700866699218750,28.700866699218750,28.703336715698242,28.703336715698242,28.705804824829102,28.705804824829102]),np.array([44.150741577148438,44.148887634277344,44.141479492187500,44.141479492187500,44.137775421142578,44.135925292968750,44.121109008789062,44.117404937744141,44.115554809570312,44.113704681396484,44.111850738525391,44.110000610351562]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.688522338867188,28.690990447998047,28.690990447998047,28.693460464477539]),np.array([44.328517913818359,44.326667785644531,44.324813842773438,44.322963714599609]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.644077301025391,28.646545410156250,28.649015426635742]),np.array([44.219257354736328,44.221111297607422,44.219257354736328]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.663829803466797,28.668767929077148]),np.array([44.182220458984375,44.178516387939453]),linewidth=3,color='green')
-    ax[sp].axis('equal')
-    #ax[sp]._viewLim(Bbox([[np.min(fieldset.gridset.grids[sp].lon),np.max(fieldset.gridset.grids[sp].lon)],[np.min(fieldset.gridset.grids[sp].lat),np.max(fieldset.gridset.grids[sp].lat)]]))
-plt.show()
+# DT 20-5-2021: Shouldn't this be in postprocessing? Gave an error, so commented out instead of fixing for now.
+# import xarray as xr
+# import matplotlib.pyplot as plt
+# data_xarray = xr.open_dataset('EforieParticles.nc')  # trajectories, time, lon, lat, z, prevlon, prevlat, prevdep, beached [obs=timestep, traj=particle]
+# x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
+# fig,ax=plt.subplots(1,3)
+# for sp in range(3):
+#     dx=fieldset.gridset.grids[sp].lon[1]-fieldset.gridset.grids[sp].lon[0] ; dy=fieldset.gridset.grids[sp].lat[1]-fieldset.gridset.grids[sp].lat[0]
+#     ax[sp].pcolormesh(fieldset.gridset.grids[sp].lon-(dx/2), fieldset.gridset.grids[sp].lat-(dy/2), fieldset.tmask[sp].data[0,0,:,:], shading='auto')
+#     ax[sp].plot(x.T,y.T)
+#     #plot dikes
+#     ax[sp].plot(np.array([28.671237945556641,28.673706054687500,28.673706054687500,28.676176071166992,28.681114196777344,28.681114196777344,28.700866699218750,28.700866699218750,28.703336715698242,28.703336715698242,28.705804824829102,28.705804824829102]),np.array([44.150741577148438,44.148887634277344,44.141479492187500,44.141479492187500,44.137775421142578,44.135925292968750,44.121109008789062,44.117404937744141,44.115554809570312,44.113704681396484,44.111850738525391,44.110000610351562]),linewidth=3,color='green')
+#     ax[sp].plot(np.array([28.688522338867188,28.690990447998047,28.690990447998047,28.693460464477539]),np.array([44.328517913818359,44.326667785644531,44.324813842773438,44.322963714599609]),linewidth=3,color='green')
+#     ax[sp].plot(np.array([28.644077301025391,28.646545410156250,28.649015426635742]),np.array([44.219257354736328,44.221111297607422,44.219257354736328]),linewidth=3,color='green')
+#     ax[sp].plot(np.array([28.663829803466797,28.668767929077148]),np.array([44.182220458984375,44.178516387939453]),linewidth=3,color='green')
+#     ax[sp].axis('equal')
+#     #ax[sp]._viewLim(Bbox([[np.min(fieldset.gridset.grids[sp].lon),np.max(fieldset.gridset.grids[sp].lon)],[np.min(fieldset.gridset.grids[sp].lat),np.max(fieldset.gridset.grids[sp].lat)]]))
+# plt.show()
 
 

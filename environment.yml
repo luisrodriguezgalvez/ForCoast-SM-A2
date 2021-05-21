@@ -1,0 +1,11 @@
+name: env
+channels:
+  - conda-forge
+dependencies:
+  - python==3.6.10
+  - parcels==2.2.1
+  - pip
+  - cartopy
+  - pip:
+    - wget
+

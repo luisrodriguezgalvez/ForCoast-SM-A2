@@ -1,5 +1,5 @@
 # Input netcdf file for lagrangian tracks
-fname : '../../EforieParticles.nc'
+fname : '../Processing/EforieParticles.nc'
 
 # Directory for figures
 figdir : './EforieFigs/'
@@ -10,7 +10,7 @@ figdir : './EforieFigs/'
 # https://clouds.eos.ubc.ca/~phil/courses/atsc301/coursebuild/html/hires_map.html
 # To generate new shapefile for other domains : 
 # ogr2ogr -skipfailures -f "ESRI Shapefile"  -clipsrc -10.0 53.0 -8.0 54.0 galway_coastlines coastlines-split-4326
-coastlinefile : "../../SMA2_Galway/Eforie_coastlines/lines.shp"
+coastlinefile : "../coastlines/Eforie_coastlines/lines.shp"
 
 # Particles release per hour (! assuming one file per source at this stage !)
 ReleaseRate : 60 

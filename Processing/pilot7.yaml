@@ -2,8 +2,8 @@ experience: Eforie
 
 # GENERAL OPTIONS
 run3D: True
-nesting: True
-stokes: True
+nesting: False
+stokes: False
 hdiffusion: True
 vdiffusion: False
 beaching: 1                    # 0: do nothing, 1: freeze, 2: un-beach (push back)
@@ -13,8 +13,8 @@ PHY_path: "../eforie/PHY/"
 WAV_path: "../eforie/WAV/"
 
 # SIMULATION DATE
-sdate: "2018-12-02"
-simlength: 5                   # days
+sdate: "2021-04-02"
+simlength: 1                   # days
 dt: 10                         # computing time step in minutes
 
 # POLLUTANT RELEASE
@@ -25,7 +25,7 @@ z0: [0.5]
 repeatdt: 1440
 
 # OUTPUT
-out_filename: "test.nc"
+out_filename: "EforieParticles.nc"
 savedt: 10                     # minuts
 detection: False
 maxage: 432000                  # minuts after which a pollutant becomes inoffensive

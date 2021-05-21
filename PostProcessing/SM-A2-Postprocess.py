@@ -7,7 +7,9 @@
 # It should be executed after the preparation of Lagrangian tracks (Parcels), once per pollutant sources.
 # 
 # # Input Requirements
-# 
+# Example 
+# - Windows: python SM-A2-Postprocess.py -y SMA2-PostProcess-Eforie.yaml -d c:\data 
+# - Linux: python SM-A2-Postprocess.py -y SMA2-PostProcess-Eforie.yaml -d /data
 # 
 # 
 # 
@@ -56,10 +58,12 @@ import sys, getopt
 from shapely.geometry.polygon import Polygon
 
 USER_YAML_FILE = ''
-   
+datadir = ''
+
 argv = sys.argv[1:]
+
 try:
-    opts, args = getopt.getopt(argv,"hy:",["yamlfile="])
+    opts, args = getopt.getopt(argv,"hy:d:",["yamlfile="])
 except getopt.GetoptError:
     print ('SM-A2-Postprocess.py -y <yamlfile>')
     sys.exit(2)
@@ -69,8 +73,10 @@ for opt, arg in opts:
         sys.exit()
     elif opt in ("-y", "--yamlfile"):
         USER_YAML_FILE = arg
+    elif opt in ("-d"):
+        datadir = arg
 print ('yaml file is', USER_YAML_FILE)
-
+print(datadir)
 
 #USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
 #USER_YAML_FILE='SMA2-PostProcess-Eforie.yaml'
@@ -80,6 +86,14 @@ with open(USER_YAML_FILE) as f:
     fname=data['fname']
     figdir=data['figdir']
     coastlinefile =data['coastlinefile']
+
+    # If datadir is provided from command line, use this instead of input from yml
+    if datadir:
+        fname = datadir + '/EforieParticles.nc'
+        figdir = datadir + '/EforieFigs/'
+
+    print('fname:')
+    print(fname)
 
 ## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##
 # To Get high res coastlines.
