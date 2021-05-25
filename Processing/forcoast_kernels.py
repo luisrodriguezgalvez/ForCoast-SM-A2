@@ -241,8 +241,8 @@ def DiffusionUniformKh(particle, fieldset, time):
         dWy = ParcelsRandom.uniform(-1., 1.) * math.sqrt(math.fabs(particle.dt) * 3)
         
         # bx = sqrt( 2 * Kh_x) , idem for by
-        bx = math.sqrt(2 * 3.7e-11)  # [°²/s]  instead of : fieldset.Kh_zonal[time, particle.depth, particle.lat, particle.lon])  , roughly corresponds to 0.2 m2/s
-        by = math.sqrt(2 * 2.0e-11)  # [°²/s]  instead of : fieldset.Kh_meridional[time, particle.depth, particle.lat, particle.lon])
+        bx = math.sqrt(2 * fieldset.Kx)  # [°²/s]  instead of : fieldset.Kh_zonal[time, particle.depth, particle.lat, particle.lon])  , roughly corresponds to 0.2 m2/s
+        by = math.sqrt(2 * fieldset.Ky)  # [°²/s]  instead of : fieldset.Kh_meridional[time, particle.depth, particle.lat, particle.lon])
 
         particle.lon += bx * dWx
         particle.lat += by * dWy
@@ -282,7 +282,7 @@ def DeleteParticle1(particle, fieldset, time):
     particle.delete()
 def DeleteParticle2(particle, fieldset, time):
     print("Particle [%d] through surface !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
-    particle.depth=0.1
+    particle.depth=-0.1
 
 
 def Frozenbeach(particle,fieldset,time):
