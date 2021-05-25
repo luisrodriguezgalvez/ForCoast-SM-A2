@@ -1,6 +1,6 @@
 #!/data/anaconda3/envs/py3_parcels/bin/python
 
-# ForCoast Pilot 7 -- Ocean Parcels Lagrangian tracking
+# ForCoast ServiceModule A2 -- Ocean Parcels Lagrangian tracking
 
 from parcels import FieldSet, Field, NestedField, VectorField
 from parcels import ParticleSet, ParticleFile, Variable, ErrorCode
@@ -9,6 +9,7 @@ from parcels import plotTrajectoriesFile
 from parcels.kernel import Kernel
 from glob import glob
 import numpy as np
+import sys
 from datetime import timedelta as delta
 import time
 from forcoast_loaders import *
@@ -16,54 +17,55 @@ from forcoast_kernels import *
 import yaml
 
 # OPTIONS
-with open('pilot7.yaml') as f:
+with open('pilot5.yaml') as f:
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
-
-
-# LOAD DATA
 if options['run3D']:
     print('running in 3D')
 else:
     print('running in 2D')
 
-# EFORIE
-ufiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_U_*.nc*'))
-vfiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_V_*.nc*'))
-wfiles = sorted(glob(options['PHY_path']+'*/*/2_EFORIE_1d_*_grid_W_*.nc*'))
-mesh_mask = options['PHY_path'] + '2_mesh_mask.nc'
-indices = {'lon': range(1,107), 'lat': range(2,211)} # NEMO puts zero along the (ghost) boundaries
-EFORIE=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+# LOADING EULERIAN VELOCITY FIELD
+if options['PHY_type']=='ROMS':
+  romsfiles=sorted(glob(options['PHY_path']))
+  fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+elif options['PHY_type']=='NEMO':
 
-if options['nesting']==True:
-    print('using 3 nested grids')
-
-    # NWS
-    ufiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_U_*.nc*'))
-    vfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_V_*.nc*'))
-    wfiles = sorted(glob(options['PHY_path']+'*/*/1_NWS_1d_*_grid_W_*.nc*'))
-    mesh_mask = options['PHY_path'] + '1_mesh_mask.nc'
-    indices = {'lon': range(1,425), 'lat': range(3,346)} # NEMO puts zero along the (ghost) boundaries
-    NWS=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
-
-    # BSFS
-    ufiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_U_*.nc*'))
-    vfiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_V_*.nc*'))
-    wfiles = sorted(glob(options['PHY_path']+'*/*/BS_1d_*_grid_W_*.nc*'))
-    mesh_mask = options['PHY_path'] + 'mesh_mask_59levels.nc'
-    BSFS=get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+  nbgrids=len(options['mfiles'])
+  myfieldset=[]
+  for g in range(nbgrids):
+    ufiles = sorted(glob(options['PHY_path']+options['ufiles'][g]))
+    vfiles = sorted(glob(options['PHY_path']+options['vfiles'][g]))
+    wfiles = sorted(glob(options['PHY_path']+options['wfiles'][g]))
+    mesh_mask = options['PHY_path'] + options['mfiles'][g]
+    indices = {'lon': range(options['range_i1'][g],options['range_i2'][g]), 'lat': range(options['range_j1'][g],options['range_j2'][g])} # NEMO puts zero along the (ghost) boundaries
+    if options['range_i2'][g]>0:
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+    else:
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+      
+  if options['nesting']==True:
+    print('using ',nbgrids,' nested grids')
 
     # NestedFields
-    U=NestedField('U', [EFORIE.U, NWS.U, BSFS.U])
-    V=NestedField('V', [EFORIE.V, NWS.V, BSFS.V])
-    if options['run3D']:
-        W=NestedField('W', [EFORIE.W, NWS.W, BSFS.W])
+    ufields=[];vfields=[];wfields=[];Kzfields=[];KzEVDfields=[];tmaskfields=[];
+    for g in range(nbgrids):
+      ufields.append(myfieldset[g].U); vfields.append(myfieldset[g].V)
+      if options['run3D']:
+        wfields.append(myfieldset[g].W)
         if options['vdiffusion']:
-            Kz=NestedField('Kz', [EFORIE.Kz, NWS.Kz, BSFS.Kz])
-            Kz_EVD=NestedField('Kz_EVD', [EFORIE.Kz_EVD, NWS.Kz_EVD, BSFS.Kz_EVD])
+          Kzfields.append(myfieldset[g].Kz) ; KzEVDfields.append(myfieldset[g].Kz_EVD);
+      if options['beaching']>0:
+        tmaskfields.append(myfieldset[g].tmask)
+    U=NestedField('U', ufields)
+    V=NestedField('V', vfields)
+    if options['run3D']:
+        W=NestedField('W', wfields)
+        if options['vdiffusion']:
+            Kz=NestedField('Kz', Kzfields)
+            Kz_EVD=NestedField('Kz_EVD', KzEVDfields)
     if options['beaching']>0:
-        tmask=NestedField('tmask', [EFORIE.tmask, NWS.tmask, BSFS.tmask])
-    del EFORIE ; del NWS ; del BSFS
+        tmask=NestedField('tmask', tmaskfields)
     
     if options['run3D']:
         if options['vdiffusion']:
@@ -83,20 +85,28 @@ if options['nesting']==True:
         else:
             fieldset = FieldSet(U, V)
 
-else:
+  else:
     print('No nesting, using just 1 grid')
-    fieldset=EFORIE
-    del EFORIE
+    fieldset=myfieldset[0]
+    del myfieldset
+else:
+  print('unrecognized physical model, aborting...')
+  sys.exit(1)
 
+# LOADING WAVE FIELD
 if options['stokes']==True:
     print('using currents and Stokes drift')
-    mesh_mask  = options['WAV_path'] + 'BS-MFC_007_003_coordinates.nc'
+    mesh_mask  = options['WAV_path'] + options['wavemesh']
     get_wav_fields(fieldset,options['WAV_path'],options['run3D'],mesh_mask,chunksize=False)
 else:
     print('using just currents, no Stokes drift')
 fieldset.add_constant('maxage', options['maxage'])
 
 # CREATE PARTICLE SET
+if options['hdiffusion']:
+    fieldset.add_constant('Kx',options['Kx'])
+    fieldset.add_constant('Ky',options['Ky'])
+
 class ForCoastParticle(JITParticle):
     age =  Variable('age', dtype=np.int32,   initial=0)
     beached = Variable('beached', dtype=np.int32,   initial=0.)   # 0: sea,     1: keep frozen on land    2: push beached particles back in sea
@@ -104,7 +114,7 @@ class ForCoastParticle(JITParticle):
         prevlon = Variable('prevlon', dtype=np.float64, initial=0., to_write=False)
         prevlat = Variable('prevlat', dtype=np.float64, initial=0., to_write=False)
         prevdep = Variable('prevdep', dtype=np.float64, initial=0., to_write=False)
-
+        
 if options['hdiffusion']==False and options['vdiffusion']==False:
     npart=1
 lon0=np.zeros(npart*len(options['x0']));lat0=np.zeros(npart*len(options['x0']));depth0=np.zeros(npart*len(options['x0']));
@@ -138,33 +148,45 @@ if options['run3D'] and options['vdiffusion']:
 if options['beaching']==1:
     print('Freezing beached particles')
     kernels += Frozenbeach
-    c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__),
+    if options['experiment']=="Eforie":
+       c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
 elif options['beaching']==2:
     print('Un-beaching beached particles')
     if (options['run3D']):
-        kernels += Unbeaching3D_nemo
+       if options['PHY_type']=="NEMO":
+          kernels += Unbeaching3D_nemo
+       elif options['PHY_type']=='ROMS':
+          kernels += Unbeaching3D_roms
     kernels += Unbeaching2D
-    c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
+    if options['experiment']=="Eforie":
+       c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
 # prevent cross-dike
-if options['beaching']>0:
+if options['experiment']=="Eforie" and options['beaching']>0:
     with open(c_includefile,'r') as f:
         c_include=f.read()
     kernels += pset.Kernel(ckernel_dikes, c_include=c_include, delete_cfiles=False)
+if options['beaching']>0:
     kernels += save_position
 else:
     print('Beaching: no action')
     
 
+# E.Coli decay
+kernels += decay
+    
 # RUN SIMULATION    
 output_file = pset.ParticleFile(name=options['out_filename'], outputdt=delta(minutes=options['savedt']))
 t0=time.time()
-pset.execute(kernels, runtime=delta(days=options['simlength']), dt=delta(minutes=options['dt']), output_file=output_file, recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle, ErrorCode.ErrorThroughSurface: DeleteParticle})
+if options['through_surface']:
+  pset.execute(kernels, runtime=delta(days=options['simlength']), dt=delta(minutes=options['dt']), output_file=output_file, recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle1, ErrorCode.ErrorThroughSurface: DeleteParticle2})
+else:
+  pset.execute(kernels, runtime=delta(days=options['simlength']), dt=delta(minutes=options['dt']), output_file=output_file, recovery={ErrorCode.ErrorOutOfBounds: DeleteParticle,  ErrorCode.ErrorThroughSurface: DeleteParticle})  
               # verbose_progress=False)
 t1=time.time() ; totaltime=t1-t0 ; print("computing time :",totaltime)
 output_file.close()
 
 
-# POST-TREATMENT DETECTION
+# POST-TREATMENT DETECTION : this is de-activated, move to Arthur's post-processing code
 if options['detection']:
     import xarray as xr
     print("Particle detection in target area")
@@ -178,16 +200,15 @@ if options['detection']:
                 print('target attained ',t,p)
 
 
-## PLOT PARCELS RESULTS
-#plt=plotTrajectoriesFile('EforieParticles.nc')
-
-## PCOLOR TRAJECTORIES OVER TMASK
+                
+## PLOT PARCELS RESULTS as simple diagnostic
 import xarray as xr
 import matplotlib.pyplot as plt
-data_xarray = xr.open_dataset('EforieParticles.nc')  # trajectories, time, lon, lat, z, prevlon, prevlat, prevdep, beached [obs=timestep, traj=particle]
-x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
-fig,ax=plt.subplots(1,3)
-for sp in range(3):
+data_xarray = xr.open_dataset(output_file.name)  # trajectories, time, lon, lat, z, prevlon, prevlat, prevdep, beached [obs=timestep, traj=particle]
+if options['experiment']=='Eforie':
+  x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
+  fig,ax=plt.subplots(1,3)
+  for sp in range(3):
     dx=fieldset.gridset.grids[sp].lon[1]-fieldset.gridset.grids[sp].lon[0] ; dy=fieldset.gridset.grids[sp].lat[1]-fieldset.gridset.grids[sp].lat[0]
     ax[sp].pcolormesh(fieldset.gridset.grids[sp].lon-(dx/2), fieldset.gridset.grids[sp].lat-(dy/2), fieldset.tmask[sp].data[0,0,:,:], shading='auto')
     ax[sp].plot(x.T,y.T)
@@ -198,6 +219,18 @@ for sp in range(3):
     ax[sp].plot(np.array([28.663829803466797,28.668767929077148]),np.array([44.182220458984375,44.178516387939453]),linewidth=3,color='green')
     ax[sp].axis('equal')
     #ax[sp]._viewLim(Bbox([[np.min(fieldset.gridset.grids[sp].lon),np.max(fieldset.gridset.grids[sp].lon)],[np.min(fieldset.gridset.grids[sp].lat),np.max(fieldset.gridset.grids[sp].lat)]]))
-plt.show()
+  plt.show()
+elif options['experiment']=='Galway':
+  fig, (ax1, ax2) = plt.subplots(1, 2)
+  x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
+  #dx=fieldset.gridset.grids[0].lon[1]-fieldset.gridset.grids[0].lon[0] ; dy=fieldset.gridset.grids[0].lat[1]-fieldset.gridset.grids[0].lat[0]
+  if options['beaching']>0:
+    ax1.pcolormesh(fieldset.tmask.lon, fieldset.tmask.lat, fieldset.tmask.data[0,:,:], shading='auto')
+  ax1.plot(x.T,y.T)   # transpose
+  ax1.axis('equal')
+  #ax[0]._viewLim(Bbox([[np.min(fieldset.gridset.grids[0].lon),np.max(fieldset.gridset.grids[0].lon)],[np.min(fieldset.gridset.grids[0].lat),np.max(fieldset.gridset.grids[0].lat)]]))
+  z=data_xarray['z'].values;
+  ax2.plot(x.T,z.T)
+  plt.show()
 
 
