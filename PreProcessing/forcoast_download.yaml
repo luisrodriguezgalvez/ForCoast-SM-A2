@@ -14,7 +14,6 @@
       - http://46.105.99.42:8080/thredds/fileServer/PHY/2_mesh_mask.nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask.nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask_59levels.nc
-
 - 1:
       pilot: galway
       service_module: A2
@@ -27,7 +26,7 @@
 - 2:
       pilot: anyone
       service_module: F2
-      download_data: yes
+      download_data: no
       download_grid: no
       outpath: c:\data
       time_offset: 0
@@ -43,3 +42,19 @@
        - https://podaac-opendap.jpl.nasa.gov/opendap/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/(YYYY)/(ddd)/(YYYYmmddHH)0000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
        - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc
        - ftp://nrt.cmems-du.eu/Core/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2/(YYYY)/(mm)/(YYYYmmdd)090000-UKMO-L4_GHRSST-SSTfnd-OSTIA-GLOB-v02.0-fv02.0.nc
+- 3:
+      pilot: limford
+      service_module: A5
+      download_data: yes
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      method: ftp
+      username: forcoast
+      password: DGHMTSJ.kumvvhf
+      datafiles:
+       - ftp://ftp.dmi.dk/outgoing/lim_hr_nest_wsid(YYYYmmdd)00.nc
+      datafiles_examples:
+       - ftp://ftp.dmi.dk/outgoing/lim_hr_nest_wsid2021052900.nc
+
+
