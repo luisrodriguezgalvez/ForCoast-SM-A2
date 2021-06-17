@@ -20,8 +20,10 @@ import sys
 
 argv = sys.argv[1:]
 
+config_file = argv[1] + '.yaml'
+
 # OPTIONS
-with open('pilot7.yaml') as f:
+with open(config_file) as f:
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 
@@ -33,9 +35,9 @@ if not argv:
     print("Use input from yml file")
 else:
     print("Replace selected input with input from command line")
-    options['sdate'] = argv[0]
-    options['simlength'] = int(argv[1])
-    options['PHY_path'] = argv[2]
+    options['sdate'] = argv[2]
+    options['simlength'] = int(argv[3])
+    options['PHY_path'] = argv[4]
     options['out_filename'] = options['PHY_path'] + '/' + "EforieParticles.nc"
 
 # LOAD DATA

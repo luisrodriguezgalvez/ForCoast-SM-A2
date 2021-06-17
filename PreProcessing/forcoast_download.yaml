@@ -1,15 +1,15 @@
 - 0:
       pilot: eforie
       service_module: A2
-      download_data: no
-      download_grid: no
-      outpath: c:\data
+      download_data: yes
+      download_grid: yes
+      outpath: /data
       time_offset: 1
       method: http
       datafiles:
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmmdd)_U_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmmdd)_V_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmmdd)_W_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
       gridfiles:
       - http://46.105.99.42:8080/thredds/fileServer/PHY/2_mesh_mask.nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask.nc
@@ -45,7 +45,7 @@
 - 3:
       pilot: limford
       service_module: A5
-      download_data: yes
+      download_data: no
       download_grid: no
       outpath: c:\data
       time_offset: 0

@@ -1,5 +1,5 @@
 # Input netcdf file for lagrangian tracks
-fname : '../Processing/EforieParticles.nc'
+fname : 'c:/data/EforieParticles.nc'
 
 # Directory for figures
 figdir : './EforieFigs/'

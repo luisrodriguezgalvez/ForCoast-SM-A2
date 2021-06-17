@@ -333,8 +333,11 @@ labels=[]
 ages=[]
 ninside=[]
 
+
 for i,t in enumerate(timerange):
+
     tinds       = (data_xarray['time'] > t)  & (data_xarray['time'] <= t+np.timedelta64(outputdt))
+    
     points_x    = data_xarray['lon'].values[tinds]
     points_y    = data_xarray['lat'].values[tinds]
     areinside   = mplpoly(points_x,points_y, poly1)
