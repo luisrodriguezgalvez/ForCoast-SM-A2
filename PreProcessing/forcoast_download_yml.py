@@ -2,8 +2,8 @@
 
 # Input arguments required: T0 (reference date in yyyy-mm-dd) period of simulation (in days) and path where to store data
 # Example: 
-# - Windows: python forcoast_download.py 2021-02-01 4 c:\data
-# - Linux: python forcoast_download.py 2021-02-01 4 /data
+# - Windows: python forcoast_download_yml.py F2 anyone 2021-06-24 2 c:\data
+# - Linux: python forcoast_download_yml.py F2 anyone 2021-02-01 4 /data
 
 import wget
 import datetime
@@ -20,6 +20,8 @@ def download_files(SM,pilot,T0,period,download_dict):
 
 		# Only download data for relevant Service Module and pilot
 		if download_dict[ii][ii]['pilot'] == pilot and download_dict[ii][ii]['service_module'] == SM:
+
+			print('test')
 
 			# Check if output data should be downloaded
 			if download_dict[ii][ii]['download_data']:
@@ -46,6 +48,7 @@ def download_files(SM,pilot,T0,period,download_dict):
 						url = url.replace('(YYYY)',start_date.strftime("%Y"))
 						url = url.replace('(YYYYmm)',start_date.strftime("%Y%m"))
 						url = url.replace('(YYYYmmdd)',start_date.strftime("%Y%m%d"))
+						url = url.replace('(YYYYmmdd_T0)',T0.strftime("%Y%m%d"))
 						url = url.replace('(YYYYmmddHH)',start_date.strftime("%Y%m%d%H"))
 						url = url.replace('(mm)',start_date.strftime("%m"))
 						url = url.replace('(ddd)',str(day_of_year))
@@ -58,6 +61,8 @@ def download_files(SM,pilot,T0,period,download_dict):
 
 						# Switching to ftplib since wget doesnt seem to support username and password properly
 						elif download_dict[ii][ii]['method'] == "ftp":
+
+							print(url)
 
 							url_split = url.split("/")[-15:]
 
