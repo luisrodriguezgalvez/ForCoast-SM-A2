@@ -20,9 +20,12 @@
       download_data: no
       download_grid: no
       outpath: c:\data
+      time_offset: 1
+      method: http
       datafiles:
-      - url_1
-      - url_2
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmdd)00.nc
+      datafiles_examples:
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_2021052600.nc
 - 2:
       pilot: anyone
       service_module: F2
@@ -34,7 +37,7 @@
       username: lrodriguez1
       password: Forcoast2019#
       datafiles:
-       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-DT.nc
+       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc
       datafiles_examples:
        - https://podaac-opendap.jpl.nasa.gov/opendap/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/2021/008/20210108090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
        - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/2021/05/20210530_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc    
@@ -59,7 +62,7 @@
 - 4:
       pilot: anyone
       service_module: F2
-      download_data: yes
+      download_data: no
       download_grid: no
       outpath: c:\data
       time_offset: 0
@@ -68,7 +71,7 @@
       username: lrodriguez1
       password: Forcoast2019#
       datafiles:
-       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-BSeas3-BS-b(YYYYmmdd_T0)_fc-sv09.00.nc
+       - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
       datafiles_examples:
        - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/2021/06/metoffice_foam1_amm15_NWS_SST_b20210624_hi20210625.nc
        - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
@@ -77,4 +80,19 @@
        - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-d/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-MFSeas5-MEDATL-b(YYYYmmdd_T0)_fc-sv06.00.nc
        - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/2021/06/20210628_d-CMCC--TEMP-BSeas3-BS-b20210624_fc-sv09.00.nc
        - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-BSeas3-BS-b(YYYYmmdd_T0)_fc-sv09.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSISFORECAST_PHY_007_001/bs-cmcc-tem-an-fc-d/2021/06/20210625_d-CMCC--TEMP-BSeas4-BS-b20210624_fc-sv10.00.nc
+- 5:
+      pilot: northernadriatic
+      # I do not think this data can be used for A2, something like A1/A5 seems more suitable
+      service_module: A2
+      download_data: yes
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      method: urllib
+      datafiles:
+      # We may need to implement a way to retrive the .nc files from a specific hour
+      - https://dsecho.inogs.it/thredds/fileServer/testForcoast/2021-07-01/ave.(YYYYmmdd)-00:00:00.pH.nc
+      datafiles_examples:
+      - http://dsecho.inogs.it/thredds/fileServer/testForcoast/ave.20210207-00:00:00.pH.nc
 
