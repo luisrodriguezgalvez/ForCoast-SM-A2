@@ -20,7 +20,23 @@ import sys
 
 argv = sys.argv[1:]
 
-config_file = argv[1] + '.yaml'
+config_file = argv[0] + '.yaml'
+
+# Parse pollutant release coordinate from command line
+bbox_input_temp = str(argv[4])[1:-1]
+bbox_input_temp = bbox_input_temp.split(',')
+bbox_input_x0 = [float(bbox_input_temp[0])]
+bbox_input_y0 = [float(bbox_input_temp[1])]
+
+# Parse target area coordinates from command line
+bbox_output_temp = str(argv[5])[1:-1]
+bbox_output_temp = bbox_output_temp.split(',')
+bbox_output_left = float(bbox_output_temp[0])
+bbox_output_bottom = float(bbox_output_temp[1])
+bbox_output_right = float(bbox_output_temp[2])
+bbox_output_top = float(bbox_output_temp[3])
+bbox_output_targetx = [bbox_output_left,bbox_output_right]
+bbox_output_targety = [bbox_output_bottom,bbox_output_top]
 
 # OPTIONS
 with open(config_file) as f:
@@ -35,10 +51,19 @@ if not argv:
     print("Use input from yml file")
 else:
     print("Replace selected input with input from command line")
-    options['sdate'] = argv[2]
-    options['simlength'] = int(argv[3])
-    options['PHY_path'] = argv[4]
+    options['sdate'] = argv[1]
+    options['simlength'] = int(argv[2])
+    options['PHY_path'] = argv[3]
+    options['x0'] = bbox_input_x0
+    options['y0'] = bbox_input_y0
+    options['targetx'] = bbox_output_targetx
+    options['targety'] = bbox_output_targety
     options['out_filename'] = options['PHY_path'] + '/' + "EforieParticles.nc"
+
+print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']))
+print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
+print("Start date: " + options['sdate'])
+print("Simulation length: " + str(options['simlength']))
 
 # LOAD DATA
 if options['run3D']:

@@ -57,13 +57,10 @@ import sys, getopt
 
 from shapely.geometry.polygon import Polygon
 
-USER_YAML_FILE = ''
-datadir = ''
-
 argv = sys.argv[1:]
 
 try:
-    opts, args = getopt.getopt(argv,"hy:d:",["yamlfile="])
+    opts, args = getopt.getopt(argv,"hy:d:s:t:",["yamlfile="])
 except getopt.GetoptError:
     print ('SM-A2-Postprocess.py -y <yamlfile>')
     sys.exit(2)
@@ -75,8 +72,15 @@ for opt, arg in opts:
         USER_YAML_FILE = arg
     elif opt in ("-d"):
         datadir = arg
-print ('yaml file is', USER_YAML_FILE)
-print(datadir)
+    elif opt in ("-s"):
+        source = arg
+    elif opt in ("-t"):
+        target = arg
+
+print('yaml file is', USER_YAML_FILE)
+print("Pollutant release coordinates: " + source)
+print("Target area coordinates: " + target)
+print("Data directory is " + datadir)
 
 #USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
 #USER_YAML_FILE='SMA2-PostProcess-Eforie.yaml'
@@ -119,17 +123,32 @@ with open(USER_YAML_FILE) as f:
     Fraction_Alarm = data['Fraction_Alarm']
 
     poly1 = data['poly1']
+# Replace target with command line input if available
+    if target:
+        target = str(target)[1:-1]
+        target_temp = target.split(',')
+        target_left = float(target_temp[0])
+        target_bottom = float(target_temp[1])
+        target_right = float(target_temp[2])
+        target_top = float(target_temp[3])
+        target_poly=[[target_left,target_bottom],[target_right,target_bottom],[target_right,target_top],[target_left,target_top]]
+        poly1=target_poly
+
     sourcepoint = data['sourcepoint']
+# Replace sourcepoint with command line input if available
+    if source:
+        sourcepoint = source
     
 # To build map domains
     domainpercentiles   = data['domainpercentiles']
     expansionfactors_x  = data['expansionfactors_x']
     expansionfactors_y  = data['expansionfactors_y']
     extformap = data['extformap']
+    model_area = data['model_area']
 # Age Classes for some outputs
     agesc = data['agesc']
 
-#To adapt when multiple farms are considered
+    #To adapt when multiple farms are considered
 polys=[poly1]
 
 if not os.path.exists(figdir):
@@ -508,6 +527,8 @@ for ti,t in enumerate(alarmtab):
         pol = Polygon(poly1)
         ax1.add_geometries([pol], facecolor='orange', edgecolor='red', alpha=0.8, crs=ccrs.PlateCarree())
 
+    # Set the extent (x0, x1, y0, y1)
+    ax1.set_extent(model_area, crs=ccrs.PlateCarree())
     ax1.scatter(sourcepoint[0],sourcepoint[1], 25,  'red')
 
     clb =plt.colorbar(sc1)

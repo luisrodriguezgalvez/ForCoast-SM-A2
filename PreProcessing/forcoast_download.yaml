@@ -1,8 +1,8 @@
 - 0:
       pilot: eforie
       service_module: A2
-      download_data: no
-      download_grid: no
+      download_data: yes
+      download_grid: yes
       outpath: /data
       time_offset: 1
       method: http
@@ -72,6 +72,8 @@
       password: Forcoast2019#
       datafiles:
        - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
+       - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-d/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-MFSeas5-MEDATL-b(YYYYmmdd_T0)_fc-sv06.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-BSeas3-BS-b(YYYYmmdd_T0)_fc-sv09.00.nc
       datafiles_examples:
        - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/2021/06/metoffice_foam1_amm15_NWS_SST_b20210624_hi20210625.nc
        - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
@@ -85,7 +87,7 @@
       pilot: northernadriatic
       # I do not think this data can be used for A2, something like A1/A5 seems more suitable
       service_module: A2
-      download_data: yes
+      download_data: no
       download_grid: no
       outpath: c:\data
       time_offset: 0
