@@ -1,6 +1,6 @@
 # Download input (uses data directory from command line, such that we don't need to change the yaml file for testing)
 cd PreProcessing
-python forcoast_download_yml.py -T 2021-09-10 -p 20 -d c:\data
+python forcoast_download_yml.py -a eforie -T 2021-09-10 -p 20 -d c:\data
 cd ..
 # Run model (uses data directory from command line, such that we don't need to change the yaml file for testing)
 cd  Processing

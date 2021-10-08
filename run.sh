@@ -11,8 +11,8 @@ rm /usr/src/app/data/*.*
 
 # Download data (using data dir from yml)
 cd /usr/src/app/preprocessing
-echo "python forcoast_download_yml.py -T $2 -p $3"
-python forcoast_download_yml.py -T $2 -p $3 
+echo "python forcoast_download_yml.py -a $1 -T $2 -p $3"
+python forcoast_download_yml.py -a $1 -T $2 -p $3 
 # Run model
 cd /usr/src/app/processing
 echo "python forcoast.py -y $1 -T $2 -p $3 -s $4 -t $5"
@@ -26,4 +26,4 @@ echo $INITIAL_DIR
 cd ..
 ls
 
-cp *.nc $INITIAL_DIR
+cp /usr/src/app/data/*.png $INITIAL_DIR
