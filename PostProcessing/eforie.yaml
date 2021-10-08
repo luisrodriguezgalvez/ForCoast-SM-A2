@@ -1,8 +1,8 @@
 # Input netcdf file for lagrangian tracks
-fname : 'c:/data/EforieParticles.nc'
+fname : '/usr/src/app/data/EforieParticles.nc'
 
 # Directory for figures
-figdir : './EforieFigs/'
+figdir : '/usr/src/app/data/'
 
 # Coastline file
 ## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##

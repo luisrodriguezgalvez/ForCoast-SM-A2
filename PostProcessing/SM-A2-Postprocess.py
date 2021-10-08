@@ -77,11 +77,6 @@ for opt, arg in opts:
     elif opt in ("-t"):
         target = arg
 
-print('yaml file is', USER_YAML_FILE)
-print("Pollutant release coordinates: " + source)
-print("Target area coordinates: " + target)
-print("Data directory is " + datadir)
-
 #USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
 #USER_YAML_FILE='SMA2-PostProcess-Eforie.yaml'
 
@@ -92,9 +87,9 @@ with open(USER_YAML_FILE) as f:
     coastlinefile =data['coastlinefile']
 
     # If datadir is provided from command line, use this instead of input from yml
-    if datadir:
+    if "datadir" in locals():
         fname = datadir + '/EforieParticles.nc'
-        figdir = datadir + '/EforieFigs/'
+        figdir = datadir + '/'
 
     print('fname:')
     print(fname)
@@ -124,7 +119,7 @@ with open(USER_YAML_FILE) as f:
 
     poly1 = data['poly1']
 # Replace target with command line input if available
-    if target:
+    if "target" in locals():
         target = str(target)[1:-1]
         target_temp = target.split(',')
         target_left = float(target_temp[0])
@@ -136,9 +131,9 @@ with open(USER_YAML_FILE) as f:
 
     sourcepoint = data['sourcepoint']
 # Replace sourcepoint with command line input if available
-    if source:
+    if "source" in locals():
         sourcepoint = source
-    
+   
 # To build map domains
     domainpercentiles   = data['domainpercentiles']
     expansionfactors_x  = data['expansionfactors_x']
@@ -147,6 +142,11 @@ with open(USER_YAML_FILE) as f:
     model_area = data['model_area']
 # Age Classes for some outputs
     agesc = data['agesc']
+
+print('yaml file is', USER_YAML_FILE)
+print("Pollutant release coordinates: " + str(sourcepoint))
+print("Target area coordinates: " + str(poly1))
+print("Output directory is " + figdir)
 
     #To adapt when multiple farms are considered
 polys=[poly1]

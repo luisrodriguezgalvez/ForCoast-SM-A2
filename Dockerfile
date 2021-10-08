@@ -1,25 +1,28 @@
 FROM continuumio/miniconda3
+
+WORKDIR /usr/src/app
+
 COPY environment.yml /tmp/environment.yml
 RUN conda env create -f /tmp/environment.yml
 
 # Pull the environment name out of the environment.yml
 RUN echo "source activate env" > /root/.bashrc
 RUN apt-get update && apt-get -y install gcc
-ENV PATH /opt/forcoast:$PATH
-ENV PATH /opt/forcoast/preprocessing:$PATH
-ENV PATH /opt/forcoast/processing:$PATH
-ENV PATH /opt/forcoast/postprocessing:$PATH
+ENV PATH /usr/src/app:$PATH
+ENV PATH /usr/src/app/preprocessing:$PATH
+ENV PATH /usr/src/app/processing:$PATH
+ENV PATH /usr/src/app/postprocessing:$PATH
 
-COPY PreProcessing /opt/forcoast/preprocessing
-COPY Processing /opt/forcoast/processing
-COPY PostProcessing /opt/forcoast/postprocessing
+COPY PreProcessing /usr/src/app/preprocessing
+COPY Processing /usr/src/app/processing
+COPY PostProcessing /usr/src/app/postprocessing
 COPY parcels /opt/conda/envs/env/lib/python3.6/site-packages/parcels
-COPY coastlines /opt/forcoast/coastlines
-COPY run.sh /opt/forcoast/run.sh
+COPY coastlines /usr/src/app/coastlines
+COPY run.sh /usr/src/app/run.sh
+COPY data /usr/src/app/data
 
-RUN chmod a+x /opt/forcoast/run.sh
+RUN chmod a+x /usr/src/app/run.sh
 
-ENTRYPOINT ["bash", "-c"]
-# ENTRYPOINT ["python", "/opt/forcoast/preprocessing/forcoast_download.py"]
-# ENTRYPOINT ["/opt/forcoast/run.sh"]
-# CMD ["python /root/glossis.py"]
+# ENTRYPOINT ["bash", "-c"]
+ENTRYPOINT ["/usr/src/app/run.sh"]
+

@@ -1,4 +1,4 @@
-experience: Eforie
+experience: Galway
 
 # GENERAL OPTIONS
 run3D: True
@@ -9,27 +9,27 @@ vdiffusion: False
 beaching: 1                    # 0: do nothing, 1: freeze, 2: un-beach (push back)
 
 # INPUT FILES
-PHY_path: "/usr/src/app/data"
-WAV_path: "/usr/src/app/data"
+PHY_path: "../eforie/PHY/"
+WAV_path: "../eforie/WAV/"
 
 # SIMULATION DATE
-sdate: "2021-04-02"
+sdate: "2021-08-01"
 simlength: 1                   # days
 dt: 10                         # computing time step in minutes
 
 # POLLUTANT RELEASE
 npart: 5
-x0: [28.6803]
-y0: [44.2201]
+x0: [-9.0435]
+y0: [53.2666]
 z0: [0.5]
 repeatdt: 1440
 
 # OUTPUT
-out_filename: "EforieParticles.nc"
+out_filename: "GalwayParticles.nc"
 savedt: 10                     # minuts
 detection: False
 maxage: 432000                  # minuts after which a pollutant becomes inoffensive
-targetx: [28.6611,28.6617]
-targety: [44.0535,44.0553]
+targetx: [-9.0470,-9.0460]
+targety: [53.2510,53.2520]
 
 # ARTHUR's POST-PROCESSING

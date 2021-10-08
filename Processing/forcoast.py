@@ -16,54 +16,80 @@ from forcoast_kernels import *
 import yaml
 import os
 from pathlib import Path
-import sys
+import sys, getopt
 
 argv = sys.argv[1:]
 
-config_file = argv[0] + '.yaml'
+try:
+    opts, args = getopt.getopt(argv,"hy:T:p:d:s:t:",["yamlfile="])
+except getopt.GetoptError:
+    print ('forcoast.py -y <yamlfile>')
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == '-h':
+        print ('forcoast.py -y <yamlfile>')
+        sys.exit()
+    elif opt in ("-y", "--yamlfile"):
+        USER_YAML_FILE = arg
+    elif opt in ("-T"):
+        startdate = arg
+    elif opt in ("-p"):
+        period = arg 
+    elif opt in ("-d"):
+        datadir = arg
+    elif opt in ("-s"):
+        source = arg
+    elif opt in ("-t"):
+        target = arg
 
-# Parse pollutant release coordinate from command line
-bbox_input_temp = str(argv[4])[1:-1]
-bbox_input_temp = bbox_input_temp.split(',')
-bbox_input_x0 = [float(bbox_input_temp[0])]
-bbox_input_y0 = [float(bbox_input_temp[1])]
-
-# Parse target area coordinates from command line
-bbox_output_temp = str(argv[5])[1:-1]
-bbox_output_temp = bbox_output_temp.split(',')
-bbox_output_left = float(bbox_output_temp[0])
-bbox_output_bottom = float(bbox_output_temp[1])
-bbox_output_right = float(bbox_output_temp[2])
-bbox_output_top = float(bbox_output_temp[3])
-bbox_output_targetx = [bbox_output_left,bbox_output_right]
-bbox_output_targety = [bbox_output_bottom,bbox_output_top]
+config_file = USER_YAML_FILE + '.yaml'
 
 # OPTIONS
 with open(config_file) as f:
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 
-# Replace options from yml file with options passed from command line (example; code could be improved) 
-# Example: 
-# - Windows: python forcoast.py 2021-02-01 4 c:\data
-# - Linux: python forcoast.py 2021-02-01 4 /data
+# Replace options from yml file with options passed from command line
 if not argv:
     print("Use input from yml file")
 else:
     print("Replace selected input with input from command line")
-    options['sdate'] = argv[1]
-    options['simlength'] = int(argv[2])
-    options['PHY_path'] = argv[3]
-    options['x0'] = bbox_input_x0
-    options['y0'] = bbox_input_y0
-    options['targetx'] = bbox_output_targetx
-    options['targety'] = bbox_output_targety
-    options['out_filename'] = options['PHY_path'] + '/' + "EforieParticles.nc"
+
+    if "startdate" in locals():
+        options['sdate'] = startdate
+    if "period" in locals():
+        options['simlength'] = int(period)
+    # options['PHY_path'] = argv[5]
+    if "source" in locals():
+        # Parse pollutant release coordinate from command line
+        bbox_input_temp = str(source)[1:-1]
+        bbox_input_temp = bbox_input_temp.split(',')
+        bbox_input_x0 = [float(bbox_input_temp[0])]
+        bbox_input_y0 = [float(bbox_input_temp[1])]
+        options['x0'] = bbox_input_x0
+        options['y0'] = bbox_input_y0
+    if "target" in locals():
+        # Parse target area coordinates from command line
+        bbox_output_temp = str(target)[1:-1]
+        bbox_output_temp = bbox_output_temp.split(',')
+        bbox_output_left = float(bbox_output_temp[0])
+        bbox_output_bottom = float(bbox_output_temp[1])
+        bbox_output_right = float(bbox_output_temp[2])
+        bbox_output_top = float(bbox_output_temp[3])
+        bbox_output_targetx = [bbox_output_left,bbox_output_right]
+        bbox_output_targety = [bbox_output_bottom,bbox_output_top]
+        options['targetx'] = bbox_output_targetx
+        options['targety'] = bbox_output_targety
+    if "datadir" in locals():
+        options['PHY_path'] = datadir
 
 print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']))
 print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
 print("Start date: " + options['sdate'])
 print("Simulation length: " + str(options['simlength']))
+print("Data directory: " + options['PHY_path'])
+
+options['out_filename'] = options['PHY_path'] + '/' + "EforieParticles.nc"
 
 # LOAD DATA
 if options['run3D']:

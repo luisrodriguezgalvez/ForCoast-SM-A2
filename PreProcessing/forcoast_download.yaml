@@ -3,7 +3,7 @@
       service_module: A2
       download_data: yes
       download_grid: yes
-      outpath: /data
+      outpath: /usr/src/app/data
       time_offset: 1
       method: http
       datafiles:

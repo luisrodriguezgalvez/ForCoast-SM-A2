@@ -25,7 +25,7 @@ from pathlib import Path
 import urllib.request
 import ssl
 
-def download_files(SM,pilot,T0,period,download_dict):
+def download_files(SM,pilot,T0,period,download_dict,datadir):
 
 	# Loop over all pilot areas in yaml file
 	for ii in range(len(download_dict)):
@@ -42,7 +42,7 @@ def download_files(SM,pilot,T0,period,download_dict):
 		   (pilot == "all" and download_dict[ii][ii]['service_module'] == SM) or \
 		   (pilot == "all" and SM == "all"):
 
-			# Check if output data should be downloaded
+		   	# Check if output data should be downloaded
 			if download_dict[ii][ii]['download_data']:
 
 				# Set time information
@@ -71,6 +71,10 @@ def download_files(SM,pilot,T0,period,download_dict):
 						url = url.replace('(mm)',start_date.strftime("%m"))
 						url = url.replace('(ddd)',str(day_of_year))
 						url = url.replace('(month_length)',str(calendar.monthrange(start_date.year, start_date.month)[1]))
+
+						# Replace data directory in yaml file with one from command line, if provided
+						if datadir != "Using outpath from yml file":
+							download_dict[ii][ii]['outpath'] =  datadir
 
 						if download_dict[ii][ii]['method'] == "urllib":
 
@@ -137,6 +141,10 @@ def download_files(SM,pilot,T0,period,download_dict):
 			if download_dict[ii][ii]['download_grid']:
 				for jj in range(len(download_dict[ii][ii]['gridfiles'])):
 					url = download_dict[ii][ii]['gridfiles'][jj]
+
+					# Replace data directory in yaml file with one from command line, if provided
+					if datadir != "Using outpath from yml file":
+						download_dict[ii][ii]['outpath'] =  datadir
 					
 					print('getting: ' + url)
 					filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
@@ -149,6 +157,7 @@ if __name__ == '__main__':
 	parser.add_argument("-T", "--time", help = "Set reference time", required = True, default = "")
 	parser.add_argument("-s", "--service", help = "Service Module ID", required = False, default = "all")
 	parser.add_argument("-a", "--pilot", help = "Pilot area ID", required = False, default = "all")
+	parser.add_argument("-d", "--datadir", help = "Data directory in which to download data", required = False, default = "Using outpath from yml file")
 	parser.add_argument("-p", "--period", help = "Set period for which to download data", required = False, default = "0")
 
 	argument = parser.parse_args()
@@ -172,5 +181,22 @@ if __name__ == '__main__':
 	if argument.pilot:
 		pilot = argument.pilot
 		print('Pilot area = ' + pilot)
+	if argument.datadir:
+		datadir = argument.datadir
+		print('Data directory = ' + datadir)
+		# Check if directory exists, and make it otherwise:
+		isExist = os.path.exists(datadir)
+		if not isExist and datadir != "Using outpath from yml file":
+			os.makedirs(datadir)
+			print("Data directory created: " + datadir)
 
-	download_files(SM,pilot,T0_datetime,period,download_dict)
+	download_files(SM,pilot,T0_datetime,period,download_dict,datadir)
+
+
+
+
+
+
+  
+  # Create a new directory because it does not exist 
+
