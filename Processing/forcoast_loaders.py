@@ -115,8 +115,7 @@ def get_roms_fields(files,**kwargs):
         #fieldset.add_field(Field('bottom_depth', fieldset.W.depth[-1, :, :], lon=lons, lat=lats))
         #fieldset.add_field(Field('top_depth', fieldset.U.depth[0, :, :], lon=lons, lat=lats))
 
-
-        return fieldset
+    return fieldset
 
 
 
