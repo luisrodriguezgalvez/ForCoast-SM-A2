@@ -34,8 +34,8 @@ out_filename: "GalwayParticles.nc"
 savedt: 10                     # minuts
 detection: False
 maxage: 432000                  # minuts after which a pollutant becomes inoffensive
-targetx: [28.6611,28.6617]
-targety: [44.0535,44.0553]
+targetx: [-9.0470,-9.0460]
+targety: [53.2510,53.2520]
 
 # ARTHUR's POST-PROCESSING
 # ...
