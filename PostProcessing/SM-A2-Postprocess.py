@@ -7,9 +7,7 @@
 # It should be executed after the preparation of Lagrangian tracks (Parcels), once per pollutant sources.
 # 
 # # Input Requirements
-# Example 
-# - Windows: python SM-A2-Postprocess.py -y SMA2-PostProcess-Eforie.yaml -d c:\data 
-# - Linux: python SM-A2-Postprocess.py -y SMA2-PostProcess-Eforie.yaml -d /data
+# 
 # 
 # 
 # 
@@ -57,10 +55,11 @@ import sys, getopt
 
 from shapely.geometry.polygon import Polygon
 
+USER_YAML_FILE = ''
+   
 argv = sys.argv[1:]
-
 try:
-    opts, args = getopt.getopt(argv,"hy:d:s:t:",["yamlfile="])
+    opts, args = getopt.getopt(argv,"hy:",["yamlfile="])
 except getopt.GetoptError:
     print ('SM-A2-Postprocess.py -y <yamlfile>')
     sys.exit(2)
@@ -70,12 +69,8 @@ for opt, arg in opts:
         sys.exit()
     elif opt in ("-y", "--yamlfile"):
         USER_YAML_FILE = arg
-    elif opt in ("-d"):
-        datadir = arg
-    elif opt in ("-s"):
-        source = arg
-    elif opt in ("-t"):
-        target = arg
+print ('yaml file is', USER_YAML_FILE)
+
 
 #USER_YAML_FILE='SMA2-PostProcess-Galway.yaml'
 #USER_YAML_FILE='SMA2-PostProcess-Eforie.yaml'
@@ -85,14 +80,6 @@ with open(USER_YAML_FILE) as f:
     fname=data['fname']
     figdir=data['figdir']
     coastlinefile =data['coastlinefile']
-
-    # If datadir is provided from command line, use this instead of input from yml
-    if "datadir" in locals():
-        fname = datadir + '/EforieParticles.nc'
-        figdir = datadir + '/'
-
-    print('fname:')
-    print(fname)
 
 ## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##
 # To Get high res coastlines.
@@ -118,37 +105,17 @@ with open(USER_YAML_FILE) as f:
     Fraction_Alarm = data['Fraction_Alarm']
 
     poly1 = data['poly1']
-# Replace target with command line input if available
-    if "target" in locals():
-        target = str(target)[1:-1]
-        target_temp = target.split(',')
-        target_left = float(target_temp[0])
-        target_bottom = float(target_temp[1])
-        target_right = float(target_temp[2])
-        target_top = float(target_temp[3])
-        target_poly=[[target_left,target_bottom],[target_right,target_bottom],[target_right,target_top],[target_left,target_top]]
-        poly1=target_poly
-
     sourcepoint = data['sourcepoint']
-# Replace sourcepoint with command line input if available
-    if "source" in locals():
-        sourcepoint = source
-   
+    
 # To build map domains
     domainpercentiles   = data['domainpercentiles']
     expansionfactors_x  = data['expansionfactors_x']
     expansionfactors_y  = data['expansionfactors_y']
     extformap = data['extformap']
-    model_area = data['model_area']
 # Age Classes for some outputs
     agesc = data['agesc']
 
-print('yaml file is', USER_YAML_FILE)
-print("Pollutant release coordinates: " + str(sourcepoint))
-print("Target area coordinates: " + str(poly1))
-print("Output directory is " + figdir)
-
-    #To adapt when multiple farms are considered
+#To adapt when multiple farms are considered
 polys=[poly1]
 
 if not os.path.exists(figdir):
@@ -352,11 +319,8 @@ labels=[]
 ages=[]
 ninside=[]
 
-
 for i,t in enumerate(timerange):
-
     tinds       = (data_xarray['time'] > t)  & (data_xarray['time'] <= t+np.timedelta64(outputdt))
-    
     points_x    = data_xarray['lon'].values[tinds]
     points_y    = data_xarray['lat'].values[tinds]
     areinside   = mplpoly(points_x,points_y, poly1)
@@ -527,8 +491,6 @@ for ti,t in enumerate(alarmtab):
         pol = Polygon(poly1)
         ax1.add_geometries([pol], facecolor='orange', edgecolor='red', alpha=0.8, crs=ccrs.PlateCarree())
 
-    # Set the extent (x0, x1, y0, y1)
-    ax1.set_extent(model_area, crs=ccrs.PlateCarree())
     ax1.scatter(sourcepoint[0],sourcepoint[1], 25,  'red')
 
     clb =plt.colorbar(sc1)

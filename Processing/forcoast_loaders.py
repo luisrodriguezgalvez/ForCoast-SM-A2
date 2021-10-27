@@ -13,10 +13,6 @@ from pprint import pprint
 # if required, read also vertical diffusion coefficient
 # if required, read also tmask (for unbeaching)
 def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
-
-    print("debug:")
-    print(wfiles)
-
     filenames =  {'U': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': ufiles},
                   'V': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': vfiles}}
     variables =  {'U': 'vozocrtx', 'V': 'vomecrty'}
@@ -46,7 +42,6 @@ def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
         
     indices=kwargs.get('indices',None)
     cs=kwargs.get('chunksize','Auto')
-
     fieldset=FieldSet.from_nemo(filenames, variables, dimensions, indices=indices, field_chunksize=cs)
         # this includes: fieldset.W.set_scaling_factor(-1.)
     
@@ -120,8 +115,7 @@ def get_roms_fields(files,**kwargs):
         #fieldset.add_field(Field('bottom_depth', fieldset.W.depth[-1, :, :], lon=lons, lat=lats))
         #fieldset.add_field(Field('top_depth', fieldset.U.depth[0, :, :], lon=lons, lat=lats))
 
-
-        return fieldset
+    return fieldset
 
 
 

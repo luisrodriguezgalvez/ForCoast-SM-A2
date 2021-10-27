@@ -37,7 +37,7 @@
       username: lrodriguez1
       password: Forcoast2019#
       datafiles:
-       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc
+       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-DT.nc
       datafiles_examples:
        - https://podaac-opendap.jpl.nasa.gov/opendap/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/2021/008/20210108090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
        - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/2021/05/20210530_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc    

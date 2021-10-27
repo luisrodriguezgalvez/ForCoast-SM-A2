@@ -1,0 +1,41 @@
+experiment: Galway
+
+# GENERAL OPTIONS
+run3D: True
+nesting: False
+stokes: False
+hdiffusion: True
+Kx: 1.0e-12
+Ky: 1.0e-12
+vdiffusion: False
+beaching: 2                    # 0: do nothing, 1: freeze, 2: un-beach (push back)
+through_surface: True
+
+# INPUT FILES
+PHY_type: 'ROMS'
+PHY_path: "../galway/galway_bay*nc*"
+WAV_path: "../nothing/here"
+
+
+# SIMULATION DATE
+sdate: "2021-10-03"
+simlength: 3                   # days
+dt: 10                         # computing time step in minutes
+
+# POLLUTANT RELEASE
+npart: 10                      # how many pollutant released at each location
+x0: [-8.927046]
+y0: [53.142875]
+z0: [-1.0]
+repeatdt: 1440                 # minutes between pollutant releases
+
+# OUTPUT
+out_filename: "GalwayParticles.nc"
+savedt: 10                     # minuts
+detection: False
+maxage: 432000                  # minuts after which a pollutant becomes inoffensive
+targetx: [-9.0470,-9.0460]
+targety: [53.2510,53.2520]
+
+# ARTHUR's POST-PROCESSING
+# ...

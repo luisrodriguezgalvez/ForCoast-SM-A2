@@ -1,4 +1,4 @@
-name: env
+name: forcoastA2
 channels:
   - conda-forge
 dependencies:

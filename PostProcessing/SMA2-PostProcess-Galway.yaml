@@ -1,8 +1,8 @@
 # Input netcdf file for lagrangian tracks
-fname : '/usr/src/app/data/EforieParticles.nc'
+fname : '../Processing/GalwayParticles.nc'
 
 # Directory for figures
-figdir : '/usr/src/app/data/'
+figdir : './GalwayFigs/'
 
 # Coastline file
 ## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##
@@ -10,7 +10,7 @@ figdir : '/usr/src/app/data/'
 # https://clouds.eos.ubc.ca/~phil/courses/atsc301/coursebuild/html/hires_map.html
 # To generate new shapefile for other domains : 
 # ogr2ogr -skipfailures -f "ESRI Shapefile"  -clipsrc -10.0 53.0 -8.0 54.0 galway_coastlines coastlines-split-4326
-coastlinefile : "../coastlines/Eforie_coastlines/lines.shp"
+coastlinefile : "../coastlines/Galway_coastlines/lines.shp"
 
 # Particles release per hour (! assuming one file per source at this stage !)
 ReleaseRate : 60 
@@ -29,28 +29,25 @@ BuildAnim : False
 ## Age - [days]
 Age_Alarm      : 1  
 ## Proportion of release - [%]
-Fraction_Alarm : 2 
+Fraction_Alarm : 6 
 
 
 ##TODO : Number of farms, etc .. 
 # Farm polygon
-poly1 : [[28.6611,44.0435],
-             [28.67,44.0435],
-             [28.67,44.0553],
-             [28.6611,44.0553]]
+poly1 : [[-9.0175,53.16816958],
+         [-9.041166667,53.16817019],
+         [-9.042,53.18817033],
+         [-9.018833333,53.18816981]]
 
 # Source Coordinate
-sourcepoint : [28.6803,44.2201]
-
-# Input model extent
-model_area : [28.6,28.8,44.0,44.4]
+sourcepoint : [-8.927046,53.142875]
 
 
 # To build map domains
-domainpercentiles : [1,.9,.75]
-expansionfactors_x  : [0.1,1,1]
+domainpercentiles : [1,.75,.5]
+expansionfactors_x  : [0.1,.2,.2]
 expansionfactors_y  : [0.1,.2,.2]
-extformap : 2
+extformap : 0
 
 # Age Classes for some outputs - [days]
 agesc : [0,.3,.6,1.0,1.5,2,3]

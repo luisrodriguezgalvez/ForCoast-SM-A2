@@ -22,6 +22,11 @@ cd /usr/src/app/postprocessing
 echo "python SM-A2-Postprocess.py -y $1.yaml -s $4 -t $5"
 python SM-A2-Postprocess.py -y $1.yaml -s $4 -t $5
 
+# Run bulletin spcript (uses data directory from yaml file)
+cd /usr/src/app/bulletinscript
+echo "bulletin_script.py -y $1.yaml -s $4 -t $5"
+python bulletin_script.py -y $1.yaml -s $4 -t $5
+
 echo $INITIAL_DIR
 cd ..
 ls
