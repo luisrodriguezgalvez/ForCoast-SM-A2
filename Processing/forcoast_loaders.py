@@ -42,8 +42,7 @@ def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
         dimensions['tmask'] = {'lon': 'glamf', 'lat': 'gphif', 'depth': 'depthw'}
         
     indices=kwargs.get('indices',None)
-    cs=kwargs.get('chunksize','Auto')
-    fieldset=FieldSet.from_nemo(filenames, variables, dimensions, indices=indices, field_chunksize=cs)
+    fieldset=FieldSet.from_nemo(filenames, variables, dimensions, indices=indices)
         # this includes: fieldset.W.set_scaling_factor(-1.)
     
     if run3D:
@@ -104,8 +103,7 @@ def get_roms_fields(files,**kwargs):
         dimensions['tmask']    = {'lon': 'lon_rho', 'lat': 'lat_rho'}
         
     indices=kwargs.get('indices',None)
-    cs=kwargs.get('chunksize','Auto')
-    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, field_chunksize=cs, vmax=1.0e36) #allow_time_extrapolation=True
+    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
     fieldset.U.set_depth_from_field(fieldset.depth_u)
     fieldset.V.set_depth_from_field(fieldset.depth_v)
     fieldset.U.vmax=1.0e36
@@ -129,8 +127,7 @@ def get_wav_fields(fieldset,path,run3D,mesh_mask,**kwargs):
     filenames  = {'Us': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames},   'Vs': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames}}
     dimensions = {'Us': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'},'Vs': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'}}
     variables  = {'Us': 'VSDX', 'Vs': 'VSDY'}
-    cs=kwargs.get('chunksize','Auto')
-    fs=FieldSet.from_netcdf(filenames,variables,dimensions, field_chunksize=cs)
+    fs=FieldSet.from_netcdf(filenames,variables,dimensions)
     fieldset.add_field(fs.Us) ; fieldset.Us.units = GeographicPolar()
     fieldset.add_field(fs.Vs) ; fieldset.Vs.units = Geographic()
     UVs = VectorField('UVs', fs.Us, fs.Vs)
@@ -140,7 +137,7 @@ def get_wav_fields(fieldset,path,run3D,mesh_mask,**kwargs):
         filenames  = {'WMP': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames},   'SWH': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames}}
         dimensions = {'WMP': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'},'SWH': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'}}
         variables  = {'WMP': 'VTM10', 'SWH': 'VHM0'}
-        W3Dfs = FieldSet.from_netcdf(filenames,variables,dimensions,field_chunksize=cs)
+        W3Dfs = FieldSet.from_netcdf(filenames,variables,dimensions)
         fieldset.add_field(W3Dfs.WMP)
         fieldset.add_field(W3Dfs.SWH)
     
