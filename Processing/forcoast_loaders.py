@@ -13,6 +13,7 @@ from pprint import pprint
 # if required, read also vertical diffusion coefficient
 # if required, read also tmask (for unbeaching)
 def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
+    print('WFILES: ',wfiles)
     filenames =  {'U': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': ufiles},
                   'V': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': vfiles}}
     variables =  {'U': 'vozocrtx', 'V': 'vomecrty'}

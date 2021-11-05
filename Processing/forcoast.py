@@ -99,10 +99,11 @@ if options['PHY_type']=='ROMS':
   romsfiles=sorted(glob(options['PHY_path']))
   fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 elif options['PHY_type']=='NEMO':
-
+  #print('PHY PATH:', options['PHY_path'])
   nbgrids=len(options['mfiles'])
   myfieldset=[]
   for g in range(nbgrids):
+    print('PHY PATH:', options['PHY_path']+options['wfiles'][g])
     ufiles = sorted(glob(options['PHY_path']+options['ufiles'][g]))
     vfiles = sorted(glob(options['PHY_path']+options['vfiles'][g]))
     wfiles = sorted(glob(options['PHY_path']+options['wfiles'][g]))
@@ -111,7 +112,7 @@ elif options['PHY_type']=='NEMO':
     if options['range_i2'][g]>0:
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
     else:
-      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D']                ,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
       
   if options['nesting']==True:
     print('using ',nbgrids,' nested grids')
@@ -218,7 +219,7 @@ if options['beaching']==1:
     print('Freezing beached particles')
     kernels += Frozenbeach
     if options['experiment']=="Eforie":
-       c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
+       c_includefile = path.join('parcels/c_kernels/crossdike1.h') # path.dirname(__file__)
 elif options['beaching']==2:
     print('Un-beaching beached particles')
     if (options['run3D']):
@@ -228,7 +229,7 @@ elif options['beaching']==2:
           kernels += Unbeaching3D_roms
     kernels += Unbeaching2D
     if options['experiment']=="Eforie":
-       c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
+       c_includefile = path.join('parcels/c_kernels/crossdike2.h') # path.dirname(__file__),
 # prevent cross-dike
 if options['experiment']=="Eforie" and options['beaching']>0:
     with open(c_includefile,'r') as f:

@@ -3,7 +3,7 @@ experiment: Eforie
 # GENERAL OPTIONS
 run3D: True
 nesting: True
-stokes: True
+stokes: False
 hdiffusion: True
 Kx: 3.7e-11
 Ky: 2.0e-11
