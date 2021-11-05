@@ -13,8 +13,13 @@
       - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
+
       gridfiles:
       - http://46.105.99.42:8080/thredds/fileServer/PHY/2_mesh_mask.nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/1_mesh_mask.nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask.nc
       - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask_59levels.nc
 - 1:
