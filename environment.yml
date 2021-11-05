@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python==3.6.10
-  - parcels==2.2.1
+  - parcels==2.3.0
   - pip
   - cartopy
   - pip:
