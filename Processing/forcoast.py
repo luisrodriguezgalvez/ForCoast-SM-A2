@@ -22,7 +22,7 @@ import sys, getopt
 argv = sys.argv[1:]
 
 try:
-    opts, args = getopt.getopt(argv,"hy:T:p:d:s:t:",["yamlfile="])
+    opts, args = getopt.getopt(argv,"hy:T:p:d:s:",["yamlfile="])
 except getopt.GetoptError:
     print ('forcoast.py -y <yamlfile>')
     sys.exit(2)
@@ -40,10 +40,10 @@ for opt, arg in opts:
         datadir = arg
     elif opt in ("-s"):
         source = arg
-    elif opt in ("-t"):
-        target = arg
+#    elif opt in ("-t"):
+#        target = arg
 
-config_file = USER_YAML_FILE + '.yaml'
+config_file = '../usr/' + USER_YAML_FILE + '/config/config.yaml'
 
 # OPTIONS
 with open(config_file) as f:
@@ -71,25 +71,27 @@ else:
         bbox_input_temp = bbox_input_temp.split(',')
         bbox_input_x0 = [float(bbox_input_temp[0])]
         bbox_input_y0 = [float(bbox_input_temp[1])]
+        bbox_input_z0 = [float(bbox_input_temp[2])]
         options['x0'] = bbox_input_x0
         options['y0'] = bbox_input_y0
-    if "target" in locals():
-        # Parse target area coordinates from command line
-        bbox_output_temp = str(target)[1:-1]
-        bbox_output_temp = bbox_output_temp.split(',')
-        bbox_output_left = float(bbox_output_temp[0])
-        bbox_output_bottom = float(bbox_output_temp[1])
-        bbox_output_right = float(bbox_output_temp[2])
-        bbox_output_top = float(bbox_output_temp[3])
-        bbox_output_targetx = [bbox_output_left,bbox_output_right]
-        bbox_output_targety = [bbox_output_bottom,bbox_output_top]
-        options['targetx'] = bbox_output_targetx
-        options['targety'] = bbox_output_targety
+        options['z0'] = bbox_input_z0
+#    if "target" in locals():
+#        # Parse target area coordinates from command line
+#        bbox_output_temp = str(target)[1:-1]
+#        bbox_output_temp = bbox_output_temp.split(',')
+#        bbox_output_left = float(bbox_output_temp[0])
+#        bbox_output_bottom = float(bbox_output_temp[1])
+#        bbox_output_right = float(bbox_output_temp[2])
+#        bbox_output_top = float(bbox_output_temp[3])
+#        bbox_output_targetx = [bbox_output_left,bbox_output_right]
+#        bbox_output_targety = [bbox_output_bottom,bbox_output_top]
+#        options['targetx'] = bbox_output_targetx
+#        options['targety'] = bbox_output_targety
     if "datadir" in locals():
         options['PHY_path'] = datadir
 
 print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']))
-print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
+#print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
 print("Start date: " + options['sdate'])
 print("Simulation length: " + str(options['simlength']))
 print("Data directory: " + options['PHY_path'])
@@ -257,6 +259,7 @@ output_file.close()
 
 
 # POST-TREATMENT DETECTION : this is de-activated, move to Arthur's post-processing code
+'''
 if options['detection']:
     import xarray as xr
     print("Particle detection in target area")
@@ -302,5 +305,5 @@ elif options['experiment']=='Galway':
   z=data_xarray['z'].values;
   ax2.plot(x.T,z.T)
   plt.show()
-
+'''
 
