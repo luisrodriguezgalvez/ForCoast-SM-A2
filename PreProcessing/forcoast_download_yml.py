@@ -94,7 +94,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 						
 						if download_dict[ii][ii]['method'] == "http":
 
-							print('wget: getting: ' + url)
+							print('\n wget: getting: ' + url)
 
 							try:
 								filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
@@ -106,7 +106,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 
 							try:
 
-								print('ftp: getting: ' + url)
+								print('\n ftp: getting: ' + url)
 
 								url_split = url.split("/")[-15:]
 

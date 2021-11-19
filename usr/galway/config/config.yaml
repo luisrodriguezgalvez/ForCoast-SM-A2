@@ -9,7 +9,7 @@ targetnames: ['1st Farm','2nd Farm']
 #########################
 # INPUTS FOR PROCESSING #
 #########################
-experiment: Eforie
+experiment: Galway
 
 # GENERAL OPTIONS
 run3D: True
@@ -23,17 +23,17 @@ beaching: 2                     # 0: do nothing, 1: freeze, 2: un-beach (push ba
 through_surface: False
 
 # INPUT FILES
-PHY_type: "NEMO"
+PHY_type: "ROMS"
 PHY_path: "../galway/galway_bay*nc*" # AC -> should be removed from config file
 
-mfiles: [          "2_mesh_mask.nc"       ,         "1_mesh_mask.nc"      ,   "mesh_mask_59levels.nc"  ]
-ufiles: ["2_EFORIE_1h_*_grid_U_*.nc*" , "1_NWS_1h_*_grid_U_*.nc*" , "BS_1h_*_grid_U_*.nc*" ]
-vfiles: ["2_EFORIE_1h_*_grid_V_*.nc*" , "1_NWS_1h_*_grid_V_*.nc*" , "BS_1h_*_grid_V_*.nc*" ]
-wfiles: ["2_EFORIE_1h_*_grid_W_*.nc*" , "1_NWS_1h_*_grid_W_*.nc*" , "BS_1h_*_grid_W_*.nc*" ]
-range_i1: [1,1,0]
-range_i2: [107,425,0]
-range_j1: [2,3,0]
-range_j2: [211,346,0]
+# mfiles: [          "2_mesh_mask.nc"       ,         "1_mesh_mask.nc"      ,   "mesh_mask_59levels.nc"  ]
+# ufiles: ["2_EFORIE_1h_*_grid_U_*.nc*" , "1_NWS_1h_*_grid_U_*.nc*" , "BS_1h_*_grid_U_*.nc*" ]
+# vfiles: ["2_EFORIE_1h_*_grid_V_*.nc*" , "1_NWS_1h_*_grid_V_*.nc*" , "BS_1h_*_grid_V_*.nc*" ]
+# wfiles: ["2_EFORIE_1h_*_grid_W_*.nc*" , "1_NWS_1h_*_grid_W_*.nc*" , "BS_1h_*_grid_W_*.nc*" ]
+# range_i1: [1,1,0]
+# range_i2: [107,425,0]
+# range_j1: [2,3,0]
+# range_j2: [211,346,0]
 
 WAV_path: "../nothing/here"          # AC -> should be removed from config file
 wavemesh: "nothing.nc"  

@@ -14,18 +14,21 @@ mkdir -p ${DATA_DIR}
 ## Download data (using data dir from yml)
 cd ./PreProcessing
 echo "python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}"
-echo "-->Skipped"
-#python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
+#echo "-->Skipped"
+python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
+echo ''
+echo "Download done."
 
 ## Run model
 ## This is done once per source
 cd ../Processing
+echo "Starting processing for ../usr/$1/config/sources.txt"
 sourcecount=0
 while read -r s; do
     echo "python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR} "
-    echo "-->Skipped"
-    #python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR}
-    #mv ../usr/$1/output/test.nc ../usr/$1/output/test_${sourcecount}.nc
+#    echo "-->Skipped"
+    python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR}
+    mv ../usr/$1/output/test.nc ../usr/$1/output/test_${sourcecount}.nc
     sourcecount=`expr $sourcecount + 1`
 done < "../usr/$1/config/sources.txt"
 
