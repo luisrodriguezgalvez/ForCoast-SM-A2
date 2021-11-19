@@ -25,6 +25,7 @@ through_surface: False
 # INPUT FILES
 PHY_type: "ROMS"
 PHY_path: "../galway/galway_bay*nc*" # AC -> should be removed from config file
+files   : "galway_bay*nc*"
 
 # mfiles: [          "2_mesh_mask.nc"       ,         "1_mesh_mask.nc"      ,   "mesh_mask_59levels.nc"  ]
 # ufiles: ["2_EFORIE_1h_*_grid_U_*.nc*" , "1_NWS_1h_*_grid_U_*.nc*" , "BS_1h_*_grid_U_*.nc*" ]

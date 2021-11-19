@@ -98,7 +98,8 @@ print("Data directory: " + options['PHY_path'])
 
 # LOADING EULERIAN VELOCITY FIELD
 if options['PHY_type']=='ROMS':
-  romsfiles=sorted(glob(options['PHY_path']))
+  romsfiles=sorted(glob(options['PHY_path']+options['files']))
+  print('romsfiles :' + romsfiles[0])
   fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 elif options['PHY_type']=='NEMO':
   #print('PHY PATH:', options['PHY_path'])
