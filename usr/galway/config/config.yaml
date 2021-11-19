@@ -16,8 +16,8 @@ run3D: True
 nesting: False
 stokes: False
 hdiffusion: True
-Kx: 1.0e-12
-Ky: 1.0e-12
+Kx: 1.0e-11
+Ky: 1.0e-11
 vdiffusion: False
 beaching: 2                     # 0: do nothing, 1: freeze, 2: un-beach (push back)
 through_surface: False
@@ -45,8 +45,8 @@ simlength: 5                    # days
 dt: 10                          # computing time step in minutes
 
 # POLLUTANT RELEASE
-npart: 10
-repeatdt: 1440
+npart: 2
+repeatdt: 10
 
 # OUTPUT
 savedt: 10                      # minuts
@@ -105,6 +105,6 @@ extformap : 2
 ###
 
 # Age Classes for some outputs - [days]
-agesc : [0  ,  .3,  .6  , 1.0 ,  1.5 , 2  ,  3  ,  4  ,  5  , 6]
-riskc : [  100,  95 ,  90  ,  85  ,  75 , 40  , 20 , 10  , 5   ]
+agesc : [0  ,  .3,  .6  , 1.0 ,  1.5 , 2  ,  3  ,  4  ,  5  , 6, 10]
+riskc : [  100,  95 ,  90  ,  85  ,  75 , 50  , 30 , 20  , 15 , 5  ]
 #riskc : [  100,  100 ,  100  ,  100  ,  100 , 100  , 100 , 100  , 100   ]

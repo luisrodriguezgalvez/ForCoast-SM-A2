@@ -157,7 +157,7 @@ with open(USER_YAML_FILE) as f:
 if not os.path.exists(figdir):
     os.makedirs(figdir)
 
-print('Start Preprocessing for :')
+print('Start Post-Processing for :')
 print('user : ' + data['username']) 
 print(' for source %s at lat: %s and lon: %s '%(sourcecount, sourcepoint[1], sourcepoint[0]))      
 print(' for farm   %s which corners are at :'%(targetcount))
