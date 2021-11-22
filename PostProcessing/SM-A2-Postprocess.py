@@ -614,7 +614,7 @@ fig.savefig( figdir+'TS_Risk_chart.png', dpi=200)
 
 # Writing Risk values for further use
 with open(figdir+'Risk.csv', 'w') as f:
-    writer = csv.writer(f, delimiter='\t')
+    writer = csv.writer(f, delimiter=',')
     writer.writerows(zip(timerange,risk))
 
 ############
