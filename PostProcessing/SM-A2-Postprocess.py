@@ -613,8 +613,8 @@ ax.set_xlabel('Time to reach - [days]')
 fig.savefig( figdir+'TS_Risk_chart.png', dpi=200)
 
 # Writing Risk values for further use
-with open(figdir+'Risk.csv', 'w') as f:
-    writer = csv.writer(f, delimiter='\t')
+with open(figdir+'Risk.csv', 'w', newline='') as f:
+    writer = csv.writer(f, delimiter=',')
     writer.writerows(zip(timerange,risk))
 
 ############
