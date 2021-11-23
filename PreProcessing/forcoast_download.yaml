@@ -5,6 +5,7 @@
       download_grid: yes
       outpath: /usr/src/app/data
       time_offset: 1
+      timestep: daily
       method: http
       datafiles:
       - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
@@ -29,9 +30,10 @@
       download_grid: no
       outpath: /usr/src/app/data
       time_offset: 1
+      timestep: hourly
       method: http
       datafiles:
-      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmdd)00.nc
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmddHH).nc
       datafiles_examples:
       - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_2021052600.nc
 - 2:
@@ -41,6 +43,7 @@
       download_grid: no
       outpath: c:\data
       time_offset: 0
+      timestep: daily
       method: ftp
       username: lrodriguez1
       password: Forcoast2019#
@@ -60,6 +63,7 @@
       download_grid: no
       outpath: c:\data
       time_offset: 0
+      timestep: daily
       method: ftp
       username: forcoast
       password: DGHMTSJ.kumvvhf
@@ -74,6 +78,7 @@
       download_grid: no
       outpath: c:\data
       time_offset: 0
+      timestep: daily
       forcast: yes
       method: ftp
       username: lrodriguez1
@@ -99,6 +104,7 @@
       download_grid: no
       outpath: c:\data
       time_offset: 0
+      timestep: daily
       method: urllib
       datafiles:
       # We may need to implement a way to retrive the .nc files from a specific hour
