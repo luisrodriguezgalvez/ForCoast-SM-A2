@@ -46,12 +46,18 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 			if download_dict[ii][ii]['download_data']:
 
 				# Set time information
-				delta = datetime.timedelta(days=1)
+				if download_dict[ii][ii]['timestep'] == "daily":
+					delta = datetime.timedelta(days=1)
+				elif download_dict[ii][ii]['timestep'] == "hourly":
+					delta = datetime.timedelta(hours=1)
 				# Some data required 1 day before and after actual time window to be downloaded
 				start_date = T0 - datetime.timedelta(days=download_dict[ii][ii]['time_offset'])
 				end_date = start_date + datetime.timedelta(days=int(period)) + datetime.timedelta(days=download_dict[ii][ii]['time_offset'])
 
-				duration = end_date - start_date
+				if download_dict[ii][ii]['timestep'] == "daily":
+					duration = end_date - start_date
+				elif download_dict[ii][ii]['timestep'] == "hourly":
+					duration = (end_date - start_date)*24
 
 				for tt in range(0,duration.days+1):
 					for jj in range(len(download_dict[ii][ii]['datafiles'])):
@@ -88,16 +94,25 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 							filename = url.split("/")[-1:]
 							output_filename = Path(download_dict[ii][ii]['outpath'] + '\\' + filename[0].replace(':',''))
 
-							with urllib.request.urlopen(url, context=ctx) as u, \
-								open(output_filename, 'wb') as f:
-								f.write(u.read())
+							if os.path.isfile(output_filename) == False:
+								with urllib.request.urlopen(url, context=ctx) as u, \
+									open(output_filename, 'wb') as f:
+									f.write(u.read())
+							else:
+								print('File already downloaded')
 						
 						if download_dict[ii][ii]['method'] == "http":
 
+							filename = url.split("/")[-1:]
 							print('\n wget: getting: ' + url)
 
 							try:
-								filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
+								outfile = download_dict[ii][ii]['outpath'] + "\\" + filename[0]
+								if os.path.isfile(outfile) == False:
+									filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
+								else:
+									print('File already downloaded')
+
 							except:
 								print('File is not available, check available dates at source')
 
@@ -123,11 +138,14 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 
 								outputfile = download_dict[ii][ii]['outpath'] + '/' + ftp_file
 
-								# Only download if file exists
-								if ftp_file in ftp.nlst():
-									ftp.retrbinary("RETR " + ftp_file, open(outputfile, 'wb').write)
+								if os.path.isfile(outputfile) == False:
+									# Only download if file exists
+									if ftp_file in ftp.nlst():
+										ftp.retrbinary("RETR " + ftp_file, open(outputfile, 'wb').write)
+									else:
+										print('File is not available, check available dates at source')
 								else:
-									print('File is not available, check available dates at source')
+									print('File already downloaded')
 
 								ftp.quit()
 
@@ -146,8 +164,14 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 					if datadir != "Using outpath from yml file":
 						download_dict[ii][ii]['outpath'] =  datadir
 					
-					print('getting: ' + url)
-					filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
+					filename = url.split("/")[-1:]
+					print('\n wget: getting: ' + url)
+					outfile = download_dict[ii][ii]['outpath'] + "\\" + filename[0]
+
+					if os.path.isfile(outfile) == False:
+						filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
+					else:
+						print('File already downloaded')
 
 if __name__ == '__main__':
 
