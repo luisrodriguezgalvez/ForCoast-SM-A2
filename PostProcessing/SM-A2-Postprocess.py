@@ -460,13 +460,13 @@ ax.set_xticks(np.arange(1, len( agesplot ) + 1))
 ax.set_xticklabels(labels, fontsize=8)
 ax.set_xlim(0.25, len(agesplot) + 0.75)
 #plt.xticks(rotation=45)
-ax.set_ylabel('Time to reach ' + targetnames[targetcount] +' [days]')
+ax.set_ylabel('Time to reach ' + targetnames[targetcount] +' [days]', labelpad = 2)
 
 # colorbar
 cax=fig.add_axes([0.91,0.1,.03,.8])
 norm = colors.Normalize(vmin=0, vmax=100)
 cb = colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation='vertical')
-cax.set_ylabel('Fraction reaching ' + targetnames[targetcount] +' [%]')
+cax.set_ylabel('Fraction reaching ' + targetnames[targetcount] +' [%]', labelpad = 2)
 
 fig.savefig( figdir+'TS_violin.png', dpi=200)
 
