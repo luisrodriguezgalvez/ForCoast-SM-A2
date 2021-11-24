@@ -1,21 +1,34 @@
 #!/bin/bash
 # Example: run.sh eforie 2021-09-20 10 
 # Example: run.sh eforie 2021-09-20 10 
+# Example: run_py.sh galway 2021-11-01 5 [-8.927046,53.142875,-1.0] [[-9.0175,53.16816958],[-9.041166667,53.16817019],[-9.042,53.18817033],[-9.018833333,53.18816981]]
 
-#source activate env
+source activate forcoastA2
+
 INITIAL_DIR="$(pwd)"
+cd /usr/src/app
 
 # Clean data folder
-#rm /usr/src/app/data/*.*
-DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
+DATA_DIR=/usr/src/app/data/
+#DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
 
-mkdir -p ${DATA_DIR}
+#mkdir -p ${DATA_DIR}
+
+# Substitute values in source ($4) and target ($5) files
+if [[ $# -eq  5 ]]
+  then
+    echo 'Substitute values in sources.txt and targets.txt'
+    > ./usr/$1/config/sources.txt
+    echo $4 >> ./usr/$1/config/sources.txt
+    > ./usr/$1/config/targets.txt
+    echo $5 >> ./usr/$1/config/targets.txt
+fi
 
 ## Download data (using data dir from yml)
 cd ./PreProcessing
 echo "python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}"
-echo "-->Skipped"
-#python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
+#echo "-->Skipped"
+python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
 echo ''
 echo '###########'
 echo "Download done."
@@ -71,8 +84,8 @@ targetcount=0
 while read -r t; do
     sourcecount=0
     while read -r s; do
-	echo "python bulletin_script.py -y $1 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
-	python bulletin_script.py -y $1 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
+	echo "python bulletin_script.py -y $1 -T $2 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
+	python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
         sourcecount=`expr $sourcecount + 1`
     done < "../usr/$1/config/sources.txt"
     targetcount=`expr $targetcount + 1`
@@ -88,4 +101,5 @@ echo $INITIAL_DIR
 cd ..
 ls
 
-#cp /usr/src/app/data/*.png $INITIAL_DIR
+cp /usr/src/app/usr/$1/output/target_0_source_0/bulletin.png $INITIAL_DIR
+cp /usr/src/app/usr/$1/output/target_0_source_0/bulletin.png ${DATA_DIR}

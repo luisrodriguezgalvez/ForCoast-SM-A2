@@ -1,10 +1,10 @@
 username: eforie
 
 # Sources coordinates are given in sources.txt - having this separate is required for bash interpretation.
-sourcenames: ['Costanza Sewage','Testpoint']
+sourcenames: ['Source']
 
 # Targets coordinates are given in targets.txt - having this separate is required for bash interpretation.
-targetnames: ['MyFarm']
+targetnames: ['My farm']
 
 #########################
 # INPUTS FOR PROCESSING #

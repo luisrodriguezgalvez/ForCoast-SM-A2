@@ -67,7 +67,7 @@ else:
     # options['PHY_path'] = argv[5]
     if "source" in locals():
         # Parse pollutant release coordinate from command line
-        bbox_input_temp = str(source)[1:-1]
+        bbox_input_temp = str(source)[1:-2]
         bbox_input_temp = bbox_input_temp.split(',')
         bbox_input_x0 = [float(bbox_input_temp[0])]
         bbox_input_y0 = [float(bbox_input_temp[1])]

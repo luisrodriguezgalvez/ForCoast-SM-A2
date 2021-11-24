@@ -1,10 +1,10 @@
 username: galway
 
 # Sources coordinates are given in sources.txt - having this separate is required for bash interpretation.
-sourcenames: ['Crooky Pub'] # 
+sourcenames: ['Source'] # 
 
 # Targets coordinates are given in targets.txt - having this separate is required for bash interpretation.
-targetnames: ['1st Farm','2nd Farm']
+targetnames: ['My farm']
 
 #########################
 # INPUTS FOR PROCESSING #

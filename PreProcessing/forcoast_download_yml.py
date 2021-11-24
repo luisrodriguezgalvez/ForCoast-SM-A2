@@ -92,7 +92,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 							ctx.verify_mode = ssl.CERT_NONE
 
 							filename = url.split("/")[-1:]
-							output_filename = Path(download_dict[ii][ii]['outpath'] + '\\' + filename[0].replace(':',''))
+							output_filename = Path(download_dict[ii][ii]['outpath'] + '/' + filename[0].replace(':',''))
 
 							if os.path.isfile(output_filename) == False:
 								with urllib.request.urlopen(url, context=ctx) as u, \
@@ -107,7 +107,8 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 							print('\n wget: getting: ' + url)
 
 							try:
-								outfile = download_dict[ii][ii]['outpath'] + "\\" + filename[0]
+								outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0]
+								print(outfile)
 								if os.path.isfile(outfile) == False:
 									filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
 								else:
@@ -166,7 +167,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 					
 					filename = url.split("/")[-1:]
 					print('\n wget: getting: ' + url)
-					outfile = download_dict[ii][ii]['outpath'] + "\\" + filename[0]
+					outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0]
 
 					if os.path.isfile(outfile) == False:
 						filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
