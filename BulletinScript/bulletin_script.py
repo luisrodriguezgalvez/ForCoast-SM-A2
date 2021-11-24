@@ -57,7 +57,7 @@ img_riskchart = Image.open(figdir+'TS_Risk_chart.png')
 risktab=[]
 # Here we need to select the maps for the worst case
 with open(figdir+'Risk.csv', 'r') as f:
-    reader = csv.reader(f, delimiter=',') # LR 1. delimiter='\t' does not find tabs in Risk.csv and 2. the blank in-between rows are deleted (manually) from Risk.csv
+    reader = csv.reader(f, delimiter=',')
     for row in reader: # each row is a list
         risktab.append(row)
 
