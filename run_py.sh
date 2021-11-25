@@ -3,16 +3,20 @@
 # Example: run.sh eforie 2021-09-20 10 
 # Example: run_py.sh galway 2021-11-01 5 [-8.927046,53.142875,-1.0] [[-9.0175,53.16816958],[-9.041166667,53.16817019],[-9.042,53.18817033],[-9.018833333,53.18816981]]
 
+doPreProcessing=true
+doProcessing=true
+doPostProcessing=true
+doBulletin=true
+
 source activate forcoastA2
 
 INITIAL_DIR="$(pwd)"
 cd /usr/src/app
 
 # Clean data folder
-DATA_DIR=/usr/src/app/data/
-#DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
-
-#mkdir -p ${DATA_DIR}
+#DATA_DIR=/usr/src/app/data/
+DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
+mkdir -p ${DATA_DIR}
 
 # Substitute values in source ($4) and target ($5) files
 if [[ $# -eq  5 ]]
@@ -27,8 +31,12 @@ fi
 ## Download data (using data dir from yml)
 cd ./PreProcessing
 echo "python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}"
-#echo "-->Skipped"
-python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
+if $doPreProcessing ; then
+    python forcoast_download_yml.py -a $1 -T $2 -p $3 -d ${DATA_DIR}
+else
+    echo "-->Skipped"
+fi
+
 echo ''
 echo '###########'
 echo "Download done."
@@ -43,12 +51,15 @@ echo '###########'
 sourcecount=0
 while read -r s; do
     echo "python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR} "
-#    echo "-->Skipped"
-    python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR}
-    if [ -e ../usr/$1/output/test.nc ]; then
-      mv ../usr/$1/output/test.nc ../usr/$1/output/test_${sourcecount}.nc
+    if $doProcessing; then
+	python forcoast.py -y $1 -T $2 -p $3 -s $s -d ${DATA_DIR}
+	if [ -e ../usr/$1/output/test.nc ]; then
+	    mv ../usr/$1/output/test.nc ../usr/$1/output/test_${sourcecount}.nc
+	else
+	    echo "CRITICAL ERROR: PARCELS DID NOT GENERATE THE EXPECTED OUTPUT FILE"; exit
+	fi
     else
-      echo "CRITICAL ERROR: PARCELS DID NOT GENERATE THE EXPECTED OUTPUT FILE"; exit
+	echo "-->Skipped"
     fi
     sourcecount=`expr $sourcecount + 1`
 done < "../usr/$1/config/sources.txt"
@@ -66,8 +77,14 @@ while read -r t; do # Loop on targets
     sourcecount=0
     while read -r s; do # Loop on Sources
 	echo "python SM-A2-Postprocess.py -y $1 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
-	python SM-A2-Postprocess.py -y $1 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
-        sourcecount=`expr $sourcecount + 1`
+	if $doPostProcessing; then
+	    python SM-A2-Postprocess.py -y $1 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
+	    # Generate Animation
+	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks_Alarm*.png -scale 480x270 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks.gif
+	else
+            echo "-->Skipped"
+	fi
+	sourcecount=`expr $sourcecount + 1`    
     done < "../usr/$1/config/sources.txt"
     targetcount=`expr $targetcount + 1`
 done < "../usr/$1/config/targets.txt"
@@ -78,6 +95,10 @@ echo '###########'
 echo '###########'
 echo "Starting Bulletin Generation, according to ../usr/$1/config/sources.txt and ../usr/$1/config/targets.txt"
 echo '###########'
+
+
+
+
 # Run bulletin spcript 
 cd ../BulletinScript
 targetcount=0
@@ -85,7 +106,11 @@ while read -r t; do
     sourcecount=0
     while read -r s; do
 	echo "python bulletin_script.py -y $1 -T $2 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
-	python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
+	if $doBulleting ; then
+	    python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
+	else
+	    echo "-->Skipped"
+        fi
         sourcecount=`expr $sourcecount + 1`
     done < "../usr/$1/config/sources.txt"
     targetcount=`expr $targetcount + 1`

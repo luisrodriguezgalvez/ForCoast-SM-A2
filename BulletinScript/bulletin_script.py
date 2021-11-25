@@ -66,7 +66,7 @@ print(risktab)
 riskval  = [ float(v[1]) for v in risktab]
 imaxrisk = riskval.index(max(riskval))
 
-img_map = Image.open(figdir+'AllTracks_Alarm'+str(imaxrisk)+'.png')
+img_map = Image.open(figdir+'AllTracks_Alarm_'+'%03d'%(imaxrisk)+'.png')
 img_logo = Image.open('./FORCOAST_Logo_WhiteBack.png')
 img_footer = Image.open('./FORCOAST_Footer_Blue.png')
 

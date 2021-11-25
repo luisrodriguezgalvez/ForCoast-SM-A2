@@ -501,7 +501,7 @@ if not skipmap :
 
         ax1.set_title( labelsm[ti])
         scale_bar(ax1, 1)
-        plt.savefig(figdir+'AllTracks_Alarm'+str(ti)+'.png', dpi=200)
+        plt.savefig(figdir+'AllTracks_Alarm_'+'%03d'%(ti)+'.png', dpi=200)
 
 ############
 # Risk
