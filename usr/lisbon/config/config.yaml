@@ -1,0 +1,98 @@
+username: galway
+
+# Sources coordinates are given in sources.txt - having this separate is required for bash interpretation.
+sourcenames: ['Source'] # 
+
+# Targets coordinates are given in targets.txt - having this separate is required for bash interpretation.
+targetnames: ['My farm']
+
+#########################
+# INPUTS FOR PROCESSING #
+#########################
+experiment: Lisbon
+
+# GENERAL OPTIONS
+run3D: True
+nesting: False
+stokes: False
+hdiffusion: True
+Kx: 1.0e-11
+Ky: 1.0e-11
+vdiffusion: False
+beaching: 2                     # 0: do nothing, 1: freeze, 2: un-beach (push back)
+through_surface: False
+
+# INPUT FILES
+PHY_type: "MOHID"
+PHY_path: "../lisbon/????????00.nc" # AC -> should be removed from config file
+files   : "????????00.nc"
+
+WAV_path: "../nothing/here"          # AC -> should be removed from config file
+wavemesh: "nothing.nc"  
+
+# SIMULATION DATE
+sdate: "2021-11-20"
+simlength: 10                   # days
+dt: 10                          # computing time step in minutes
+
+# POLLUTANT RELEASE
+npart: 2
+repeatdt: 60
+
+# OUTPUT
+savedt: 10                      # minuts
+detection: False
+maxage: 864000                  # seconds after which a pollutant becomes inoffensive
+
+out_filename: "../usr/lisbon/output/test.nc" # AC -> should be removed from config file
+
+##############################
+# INPUTS FOR POST-PROCESSING #
+##############################
+
+# Input netcdf file for lagrangian tracks
+#fname : "../usr/eforie/output/test.nc" #'../data/test.nc'       # AC -> should be removed from config file
+
+# Directory for figures
+#figdir : "../usr/eforie/output/" # './output/'            # AC -> should be removed from config file
+
+# Coastline file
+## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##
+# To Get high res coastlines.
+# https://clouds.eos.ubc.ca/~phil/courses/atsc301/coursebuild/html/hires_map.html
+# To generate new shapefile for other domains : 
+# ogr2ogr -skipfailures -f "ESRI Shapefile"  -clipsrc -10.0 53.0 -8.0 54.0 galway_coastlines coastlines-split-4326
+#coastlinefile : "../data/coastline/Eforie_coastlines/lines.shp"
+
+### AC DELME - shouldn't be needed -> use maxage instead... 10112021 Yet, maxage seems very large. I'll maintain for now. 
+# Maximum Age of interest - [hours]
+thres_Age : 240 
+
+# Time bins for post-processing - [hours]
+outtimestep : 12 
+
+# Make animations (True) or not (False)
+## To be honest, the TRUE option isn't really working right now.. 
+BuildAnim : False
+
+
+### NOT NEEDED ANYMORE ###
+# Thresolds for alarm (should be a curve)
+## Age - [days]
+Age_Alarm      : 1  
+## Proportion of release - [%]
+Fraction_Alarm : 2 
+###
+
+### NOT NEEDED ANYMORE ###
+# To build map domains
+domainpercentiles : [1,.9,.75]
+expansionfactors_x  : [0.1,1,1]
+expansionfactors_y  : [0.1,.2,.2]
+extformap : 2
+###
+
+# Age Classes for some outputs - [days]
+agesc : [0  ,  .3,  .6  , 1.0 ,  1.5 , 2  ,  3  ,  4  ,  5  , 6, 10]
+riskc : [  100,  95 ,  90  ,  85  ,  75 , 50  , 30 , 20  , 15 , 5  ]
+#riskc : [  100,  100 ,  100  ,  100  ,  100 , 100  , 100 , 100  , 100   ]

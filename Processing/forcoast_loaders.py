@@ -13,7 +13,6 @@ from pprint import pprint
 # if required, read also vertical diffusion coefficient
 # if required, read also tmask (for unbeaching)
 def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
-    print('WFILES: ',wfiles)
     filenames =  {'U': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': ufiles},
                   'V': {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': vfiles}}
     variables =  {'U': 'vozocrtx', 'V': 'vomecrty'}
@@ -54,6 +53,38 @@ def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
     return fieldset
 
 
+# get_mohid_fields : create a new fieldset from MOHID currents (all variables co-located)
+def get_mohid_fields(files,**kwargs):
+    filenames = {'U': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
+                 'V': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}}
+    variables =  { 'U': 'u', 'V': 'v'}
+    dimensions = {'U':       {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'},
+                  'V':       {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'}}
+    run3D=kwargs.get('run3D',True)
+    if run3D:
+        filenames['W'] = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}
+        variables['W'] = 'velocity_W'
+        dimensions['W']= {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'}
+    beaching=kwargs.get('beaching',0)
+    if beaching>0:
+        filenames['tmask'] = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files[0]}
+        variables['tmask'] = 'mask'
+        dimensions['tmask']= {'lon': 'lon', 'lat': 'lat', 'depth': 'depth'}
+
+    indices=kwargs.get('indices',None)
+    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
+
+    fieldset.U.vmin=-1.0e14
+    fieldset.V.vmin=-1.0e14
+    
+    if run3D:
+        fieldset.W.vmin=-1e+14
+        def compute(fieldset):
+            fieldset.W.data[:, 0, :, :] = 0.
+        fieldset.compute_on_defer = compute
+
+        
+    return fieldset
 
 
 # get_roms_fields : create a new fieldset from ROMS currents
