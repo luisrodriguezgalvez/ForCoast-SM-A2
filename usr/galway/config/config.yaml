@@ -12,7 +12,7 @@ targetnames: ['My farm']
 experiment: Galway
 
 # GENERAL OPTIONS
-run3D: True
+run3D: False
 nesting: False
 stokes: False
 hdiffusion: True
@@ -20,11 +20,11 @@ Kx: 1.0e-11
 Ky: 1.0e-11
 vdiffusion: False
 beaching: 2                     # 0: do nothing, 1: freeze, 2: un-beach (push back)
-through_surface: False
+through_surface: True
 
 # INPUT FILES
 PHY_type: "ROMS"
-PHY_path: "../galway/galway_bay*nc*" # AC -> should be removed from config file
+PHY_path: "../galway/galway_bay*202111*nc*" # AC -> should be removed from config file
 files   : "galway_bay*nc*"
 
 # mfiles: [          "2_mesh_mask.nc"       ,         "1_mesh_mask.nc"      ,   "mesh_mask_59levels.nc"  ]

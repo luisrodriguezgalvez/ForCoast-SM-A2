@@ -68,51 +68,54 @@ def get_roms_fields(files,**kwargs):
                      'depth_w':{'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
                      'U': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
                      'V': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
-                     'W': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}}
+                     'W': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
+                      'zeta':   {'lon': files[0], 'lat': files[0],                    'data': files}}
         variables =  { 'depth_u': 'z_u', 'depth_v': 'z_v', 'depth_w': 'z_w',
-                       'U': 'u', 'V': 'v', 'W': 'w'}
+                       'U': 'u', 'V': 'v', 'W': 'w',
+                       'zeta': 'zeta'}
         dimensions = {'depth_u': {'lon': 'lon_u',   'lat': 'lat_u',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'depth_v': {'lon': 'lon_v',   'lat': 'lat_v',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'depth_w': {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'U':       {'lon': 'lon_u',   'lat': 'lat_u',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'V':       {'lon': 'lon_v',   'lat': 'lat_v',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'W':       {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'}}
+                      'W':       {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
+                      'zeta':    {'lon': 'lon_rho', 'lat': 'lat_rho',                           'time': 'ocean_time'}}
     else:
-        variables =  { 'depth_u': 'z_u',
-                       'depth_v': 'z_v',
-                       'U': 'u',
-                       'V': 'v'}
-        dimensions = {'depth_u': {'lon': 'lon_u', 'lat': 'lat_u', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'depth_v': {'lon': 'lon_v', 'lat': 'lat_v', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'U':       {'lon': 'lon_u', 'lat': 'lat_u', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'V':       {'lon': 'lon_v', 'lat': 'lat_v', 'depth': 'not_yet_set'  , 'time': 'ocean_time'}}
+        filenames = {'U': {'lon': files[0], 'lat': files[0], 'data': files},
+                     'V': {'lon': files[0], 'lat': files[0], 'data': files}}
+        variables =  { 'U': 'ubar',
+                       'V': 'vbar'}
+        dimensions = {'U':       {'lon': 'lon_u', 'lat': 'lat_u', 'time': 'ocean_time'},
+                      'V':       {'lon': 'lon_v', 'lat': 'lat_v', 'time': 'ocean_time'}}
 
     vdiffusion=kwargs.get('vdiffusion',False)
     if vdiffusion:
-        filenames['Kz']  = {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': wfiles}
-        variables['Kz']  = 'votkeavs'
-        dimensions['Kz'] = {'lon': 'glamt', 'lat': 'gphit', 'depth': 'depthw', 'time': 'time_counter'}
-        filenames['Kz_EVD']  = {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': wfiles}
-        variables['Kz_EVD']  = 'voevdavt'
-        dimensions['Kz_EVD'] = {'lon': 'glamf', 'lat': 'gphif', 'depth': 'depthw', 'time': 'time_counter'}
+        filenames['Kz']  = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}
+        variables['Kz']  = 'AKt'
+        dimensions['Kz'] = {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set', 'time': 'ocean_time'}
 
     beaching=kwargs.get('beaching',0)
     if beaching>0:
-        filenames['tmask']     = {'lon': files[0], 'lat': files[0], 'data': files[0]} # tmask is a 2D field (no depth dimension)
+        filenames['tmask']     = {'lon': files[0], 'lat': files[0], 'data': files[0]} # using s-layers, the mask is a 2D field (no depth dimension)
         variables['tmask']     = 'mask_rho'
         dimensions['tmask']    = {'lon': 'lon_rho', 'lat': 'lat_rho'}
         
     indices=kwargs.get('indices',None)
     fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
-    fieldset.U.set_depth_from_field(fieldset.depth_u)
-    fieldset.V.set_depth_from_field(fieldset.depth_v)
+    if run3D:
+        fieldset.U.set_depth_from_field(fieldset.depth_u)
+        fieldset.V.set_depth_from_field(fieldset.depth_v)
     fieldset.U.vmax=1.0e36
     fieldset.V.vmax=1.0e36
     if run3D:
         fieldset.W.set_depth_from_field(fieldset.depth_w)
         fieldset.W.vmax=1.0e36
-        #fieldset.add_field(Field('bottom_depth', fieldset.W.depth[-1, :, :], lon=lons, lat=lats))
-        #fieldset.add_field(Field('top_depth', fieldset.U.depth[0, :, :], lon=lons, lat=lats))
+
+    #fieldset.depth_u.set_scaling_factor(-1)
+    #fieldset.depth_v.set_scaling_factor(-1)
+    #if run3D:
+    #    fieldset.depth_w.set_scaling_factor(-1)
+    #    fieldset.W.set_scaling_factor(-1)
 
     return fieldset
 

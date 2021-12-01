@@ -4,7 +4,7 @@
 
 from parcels import FieldSet, Field, NestedField, VectorField
 from parcels import ParticleSet, ParticleFile, Variable, ErrorCode
-from parcels import JITParticle #, ScipyParticle
+from parcels import JITParticle, ScipyParticle
 from parcels import plotTrajectoriesFile
 from parcels.kernel import Kernel
 from glob import glob
@@ -90,7 +90,7 @@ else:
     if "datadir" in locals():
         options['PHY_path'] = datadir
 
-print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']))
+print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']) + ', z0=' + str(options['z0']))
 #print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
 print("Start date: " + options['sdate'])
 print("Simulation length: " + str(options['simlength']))
@@ -99,7 +99,7 @@ print("Data directory: " + options['PHY_path'])
 # LOADING EULERIAN VELOCITY FIELD
 if options['PHY_type']=='ROMS':
   romsfiles=sorted(glob(options['PHY_path']+options['files']))
-  print('romsfiles :' + romsfiles[0])
+  print('romsfiles: ' + romsfiles[0])
   fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 elif options['PHY_type']=='NEMO':
   #print('PHY PATH:', options['PHY_path'])
@@ -207,7 +207,7 @@ pset = ParticleSet.from_list(fieldset=fieldset, pclass=ForCoastParticle,
 if options['stokes']:
     kernels = pset.Kernel(Dbl_AdvectionRK4_3D_clumsy) if options['run3D'] else pset.Kernel(Dbl_AdvectionRK4)
 else:
-    kernels = pset.Kernel(AdvectionRK4_3D) if options['run3D'] else pset.Kernel(AdvectionRK4, delete_cfiles=False)
+    kernels = pset.Kernel(AdvectionRK4_3D) if options['run3D'] else pset.Kernel(AdvectionRK4) # delete_cfiles=False
 
 if options['hdiffusion']:
     print('Using horizontal diffusion')
