@@ -8,7 +8,7 @@ doProcessing=true
 doPostProcessing=true
 doBulletin=true
 
-source activate forcoastA2
+conda activate forcoastA2
 
 INITIAL_DIR="$(pwd)"
 cd /usr/src/app
@@ -80,7 +80,7 @@ while read -r t; do # Loop on targets
 	if $doPostProcessing; then
 	    python SM-A2-Postprocess.py -y $1 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
 	    # Generate Animation
-	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks_Alarm*.png -scale 480x270 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks.gif
+	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks_Alarm*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks.gif
 	else
             echo "-->Skipped"
 	fi
