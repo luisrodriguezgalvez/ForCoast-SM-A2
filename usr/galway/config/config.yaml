@@ -28,9 +28,9 @@ PHY_path: "../galway/galway_bay*202111*nc*" # AC -> should be removed from confi
 files   : "galway_bay*nc*"
 
 # mfiles: [          "2_mesh_mask.nc"       ,         "1_mesh_mask.nc"      ,   "mesh_mask_59levels.nc"  ]
-# ufiles: ["2_EFORIE_1h_*_grid_U_*.nc*" , "1_NWS_1h_*_grid_U_*.nc*" , "BS_1h_*_grid_U_*.nc*" ]
-# vfiles: ["2_EFORIE_1h_*_grid_V_*.nc*" , "1_NWS_1h_*_grid_V_*.nc*" , "BS_1h_*_grid_V_*.nc*" ]
-# wfiles: ["2_EFORIE_1h_*_grid_W_*.nc*" , "1_NWS_1h_*_grid_W_*.nc*" , "BS_1h_*_grid_W_*.nc*" ]
+# ufiles: ["2_EFORIE_1h_grid_U_*.nc*" , "1_NWS_1h_grid_U_*.nc*" , "BS_1h_grid_U_*.nc*" ]
+# vfiles: ["2_EFORIE_1h_grid_V_*.nc*" , "1_NWS_1h_grid_V_*.nc*" , "BS_1h_grid_V_*.nc*" ]
+# wfiles: ["2_EFORIE_1h_grid_W_*.nc*" , "1_NWS_1h_grid_W_*.nc*" , "BS_1h_grid_W_*.nc*" ]
 # range_i1: [1,1,0]
 # range_i2: [107,425,0]
 # range_j1: [2,3,0]
