@@ -8,15 +8,15 @@
       timestep: daily
       method: http
       datafiles:
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_U_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_V_(YYYYmmdd)-(YYYYmmdd).nc
-      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_(YYYYmm)01_(YYYYmm)(month_length)_grid_W_(YYYYmmdd)-(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_W_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_W_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_W_(YYYYmmdd).nc
 
       gridfiles:
       - http://46.105.99.42:8080/thredds/fileServer/PHY/2_mesh_mask.nc
