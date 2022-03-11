@@ -8,6 +8,9 @@ RUN conda env create -f /tmp/environment.yml
 # Pull the environment name out of the environment.yml
 RUN echo "source activate forcoastA2" > /root/.bashrc
 RUN apt-get update && apt-get -y install gcc
+RUN pip install wget
+RUN pip install pyyaml
+
 ENV PATH /usr/src/app:$PATH
 ENV PATH /usr/src/app/PreProcessing:$PATH
 ENV PATH /usr/src/app/Processing:$PATH
@@ -27,6 +30,6 @@ COPY usr /usr/src/app/usr
 RUN chmod a+x /usr/src/app/run_py.sh
 SHELL ["conda", "run", "-n", "forcoastA2", "/bin/bash", "-c"]
 
-# ENTRYPOINT ["bash", "-c"]
-ENTRYPOINT ["/usr/src/app/run_py.sh"]
+ENTRYPOINT ["bash", "-c"]
+# ENTRYPOINT ["/usr/src/app/run_py.sh"]
 

@@ -65,7 +65,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 						url = download_dict[ii][ii]['datafiles'][jj]
 
 						# day of year
-						day_of_year = (start_date - datetime.datetime(start_date.year, 1, 1)).days + 1 
+						day_of_year = (start_date - datetime.datetime(start_date.year, 1, 1)).days + 1
 
 						# Replace all date and time info in URL's
 						url = url.replace('(YYYY)',start_date.strftime("%Y"))
@@ -77,6 +77,8 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 						url = url.replace('(mm)',start_date.strftime("%m"))
 						url = url.replace('(ddd)',str(day_of_year))
 						url = url.replace('(month_length)',str(calendar.monthrange(start_date.year, start_date.month)[1]))
+
+						print(url)
 
 						# Replace data directory in yaml file with one from command line, if provided
 						if datadir != "Using outpath from yml file":
