@@ -8,14 +8,14 @@ doProcessing=true
 doPostProcessing=true
 doBulletin=true
 
-# conda activate forcoastA2
+conda activate forcoastA2
 
 INITIAL_DIR="$(pwd)"
 cd /usr/src/app
 
 # Clean data folder
-DATA_DIR=/usr/src/app/data/
-#DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
+#DATA_DIR=/usr/src/app/data/
+DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
 mkdir -p ${DATA_DIR}
 
 # Substitute values in source ($4) and target ($5) files
