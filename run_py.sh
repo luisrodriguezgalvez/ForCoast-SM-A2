@@ -1,32 +1,53 @@
 #!/bin/bash
-# Example: run.sh eforie 2021-09-20 10 
-# Example: run.sh eforie 2021-09-20 10 
-# Example: run_py.sh galway 2021-11-01 5 [-8.927046,53.142875,-1.0] [[-9.0175,53.16816958],[-9.041166667,53.16817019],[-9.042,53.18817033],[-9.018833333,53.18816981]]
+# Example: ./run_py.sh eforie 2022-03-02 3
+
+# Example: ./run_py.sh eforie 2022-03-02 3 github config source target datadir
+#                      $1     $2         $3 $4     $5     $6     $7     $8
+
+# Example: ./run_py.sh eforie 2022-03-02 3 github https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/config.yaml https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/sources.txt https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/targets.txt /usr/src/app/data/
+# Example: ./run_py.sh eforie 2022-03-02 3 cli local [28.6803,44.2201,0.500] [[28.6611,44.0435],[28.67,44.0435],[28.67,44.0553],[28.6611,44.0553]] /usr/src/app/data/
+
+# Example: ./run_py.sh eforie 2022-03-02 3 github config source target datadir token chat_id
+#                      $1     $2         $3 $4     $5     $6     $7     $8     $9    $10
+
+# Example: ./run_py.sh eforie 2022-03-02 3 github https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/config.yaml https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/sources.txt https://raw.githubusercontent.com/FORCOAST/ForCoast-A2-Settings/User_XYZ/targets.txt /usr/src/app/data/ 5267228188:AAGx60FtWgHkScBb3ISFL1dp6Oq_9z9z0rw -1001780197306
 
 doPreProcessing=true
 doProcessing=true
 doPostProcessing=true
 doBulletin=true
 
-# conda activate forcoastA2
-
 INITIAL_DIR="$(pwd)"
+
 cd /usr/src/app
 
-# Clean data folder
-DATA_DIR=/usr/src/app/data/
-#DATA_DIR=/home/arthur/Desktop/DOCS/PROJECTS/FORECOAST/Pilot/SM/ForCoast-SM-A3/testdata/
-mkdir -p ${DATA_DIR}
+# Get source and target files from github based on links provided
+if [[ "$4" = "github" ]] ; then
+    echo 'Get files from github'
+    wget -O ./usr/$1/config/config.yaml $5
+    wget -O ./usr/$1/config/sources.txt $6
+    echo sources.txt
+    wget -O ./usr/$1/config/targets.txt $7
+    echo targets.txt
+fi
 
 # Substitute values in source ($4) and target ($5) files
-if [[ $# -eq  5 ]]
-  then
+if [[ "$4" = "cli" ]] ; then
     echo 'Substitute values in sources.txt and targets.txt'
     > ./usr/$1/config/sources.txt
-    echo $4 >> ./usr/$1/config/sources.txt
+    echo $6 >> ./usr/$1/config/sources.txt
     > ./usr/$1/config/targets.txt
-    echo $5 >> ./usr/$1/config/targets.txt
+    echo $7 >> ./usr/$1/config/targets.txt
 fi
+
+# Set default data folder if not defined in input arguments
+if [ "$#" -eq 3 ]; then
+    DATA_DIR=/usr/src/app/data/
+else
+    DATA_DIR=$8
+fi
+
+mkdir -p ${DATA_DIR}
 
 ## Download data (using data dir from yml)
 cd ./PreProcessing
@@ -119,6 +140,17 @@ done < "../usr/$1/config/targets.txt"
 echo '###########'
 echo "Bulletin Done"
 echo '###########'
+
+echo '###########'
+echo "Share bulletin through Telegram"
+echo '###########'
+
+if [ "$#" -eq 10 ]; then
+
+    cd ../Telegram
+    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.png -M file
+
+fi
 
 # Remains TODO a multi-source bulletin per target.
 ## Can be done by collecting on the TS_Risk.png from each usr/${1}/output/source_X_target_Y/ directories
