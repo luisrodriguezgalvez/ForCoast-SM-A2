@@ -31,5 +31,5 @@ RUN chmod a+x /usr/src/app/run_py.sh
 SHELL ["conda", "run", "-n", "forcoastA2", "/bin/bash", "-c"]
 
 # ENTRYPOINT ["bash", "-c"]
-ENTRYPOINT ["/usr/src/app/run_py.sh"]
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "forcoastA2", "/usr/src/app/run_py.sh"]
 
