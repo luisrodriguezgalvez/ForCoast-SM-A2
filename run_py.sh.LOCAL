@@ -80,7 +80,7 @@ while read -r t; do # Loop on targets
 	if $doPostProcessing; then
 	    python SM-A2-Postprocess.py -y $1 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
 	    # Generate Animation
-	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks_Alarm*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks.gif
+	    convert -delay 50 -fuzz 2% -layers Optimize -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks_Alarm*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/AllTracks.gif
 	else
             echo "-->Skipped"
 	fi
@@ -106,7 +106,7 @@ while read -r t; do
     	if $doBulleting ; then
 	        python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
             # Generate Animation
-    	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.gif
+    	    convert -delay 50 -fuzz 2% -layers Optimize -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.gif
 	    else
 	        echo "-->Skipped"
         fi
