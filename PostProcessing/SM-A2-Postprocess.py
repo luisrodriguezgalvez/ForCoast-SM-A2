@@ -373,9 +373,9 @@ def scale_bar(ax, length=None, location=(0.5, 0.05), linewidth=3):
             horizontalalignment='center', verticalalignment='bottom')
 
 
-##################################
-### The Processing starts here ###
-##################################
+#######################################
+### The Post-Processing starts here ###
+#######################################
 
 # ## Data Load
 data_xarray = xr.open_dataset(fname)
@@ -469,6 +469,42 @@ cb = colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation='vertical')
 cax.set_ylabel('Fraction reaching ' + targetnames[targetcount] +' [%]', labelpad = 2)
 
 fig.savefig( figdir+'TS_violin.png', dpi=200)
+
+## Violin Plots for all time frames.
+
+for ti,t in enumerate(timerange): 
+    plt.close()
+    fig = plt.figure(figsize=(10,4))
+    ax=fig.add_axes([0.05,0.1,.85,.8], title = 'Influence of '+sourcenames[sourcecount] )
+    vpl = ax.violinplot(agesplot,showmedians=False, showextrema=False)
+    cmap = cm.get_cmap('RdPu')
+    #    ccolors = [cmap(r/100) for r in relninsideplot]
+    for pi, (patch, color) in enumerate(zip(vpl['bodies'], ccolors)):
+        patch.set_color(color)
+        patch.set_alpha(.8)
+        if pi==ti:
+            patch.set_edgecolor('black')
+
+    ax.xaxis.set_tick_params(direction='out')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xticks(np.arange(1, len( agesplot ) + 1))
+    ax.set_xticklabels(labels, fontsize=8)
+
+    ax.get_xticklabels()[ti].set_fontsize(10)
+    ax.get_xticklabels()[ti].set_weight("bold")
+
+
+    ax.set_xlim(0.25, len(agesplot) + 0.75)
+    #plt.xticks(rotation=45)
+    ax.set_ylabel('Time to reach ' + targetnames[targetcount] +' [days]', labelpad = 2)
+
+    # colorbar
+    cax=fig.add_axes([0.91,0.1,.03,.8])
+    norm = colors.Normalize(vmin=0, vmax=100)
+    cb = colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, orientation='vertical')
+    cax.set_ylabel('Fraction reaching ' + targetnames[targetcount] +' [%]', labelpad = 2)
+
+    fig.savefig( figdir+'TS_violin_'+'%03d'%(ti)+'.png', dpi=200)
 
 ############
 ## Maps
@@ -589,6 +625,31 @@ ax.spines['right'].set_color('white')
 ax.spines['bottom'].set_color('white') 
 
 fig.savefig( figdir+'TS_Risk.png', dpi=200)
+
+# Risk Figure, per time frame
+for ti,t in enumerate(timerange):
+    plt.close()
+    fig = plt.figure(figsize=(10,2))
+    ax = fig.add_axes([0.05,0.3,.85,.5])
+
+    ax.imshow( np.tile(risk, [2,1] ), cmap='RdYlGn_r', vmin=0, vmax=100)
+
+    ax.xaxis.set_tick_params(direction='out')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.set_xticks(np.arange(0, len( agesplot )))
+    ax.set_xticklabels(labels, fontsize=8)#[ l for i,l in enumerate(labels) if len(ages[i])>0])
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    ax.set_ylabel('Risk')
+    ax.spines['top'].set_color('white') 
+    ax.spines['left'].set_color('white') 
+    ax.spines['right'].set_color('white') 
+    ax.spines['bottom'].set_color('white') 
+
+    ax.get_xticklabels()[ti].set_fontsize(10)
+    ax.get_xticklabels()[ti].set_weight("bold")
+
+    fig.savefig( figdir+'TS_Risk_'+'%03d'%(ti)+'.png', dpi=200)
 
 # Risk Panel figure
 plt.close()

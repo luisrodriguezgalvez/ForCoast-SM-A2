@@ -92,27 +92,27 @@ echo '###########'
 echo "Post - Processing Done"
 echo '###########'
 
-echo '###########'
-echo "Starting Bulletin Generation, according to ../usr/$1/config/sources.txt and ../usr/$1/config/targets.txt"
-echo '###########'
-
-
-
 
 # Run bulletin spcript 
 cd ../BulletinScript
+echo '###########'
+echo "Starting Bulletin Generation, according to ../usr/$1/config/sources.txt and ../usr/$1/config/targets.txt"
+echo '###########'
 targetcount=0
 while read -r t; do
     sourcecount=0
     while read -r s; do
-	echo "python bulletin_script.py -y $1 -T $2 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
-	if $doBulleting ; then
-	    python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
-	else
-	    echo "-->Skipped"
+    	echo "python bulletin_script.py -y $1 -T $2 -s $s -sc $sourcecount -t $t -tc $targetcount -d ${DATA_DIR}"
+    	if $doBulleting ; then
+	        python bulletin_script.py -y $1 -T $2 -s $s -c $sourcecount -t $t -k $targetcount -d ${DATA_DIR}
+            # Generate Animation
+    	    convert -delay 25 -loop 0 ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin*.png ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.gif
+	    else
+	        echo "-->Skipped"
         fi
+        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.png ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.png
+        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.gif ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.gif
         sourcecount=`expr $sourcecount + 1`
-	cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.png ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.png
     done < "../usr/$1/config/sources.txt"
     targetcount=`expr $targetcount + 1`
 done < "../usr/$1/config/targets.txt"
