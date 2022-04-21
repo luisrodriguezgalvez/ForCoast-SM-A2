@@ -149,7 +149,7 @@ if [ "$#" -eq 10 ]; then
 
     cd ../Telegram
     python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.png -M file
-    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.gif -M file
+    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.gif -M document
 
 fi
 
