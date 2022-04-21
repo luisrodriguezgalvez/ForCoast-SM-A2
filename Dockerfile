@@ -7,7 +7,7 @@ RUN conda env create -f /tmp/environment.yml
 
 # Pull the environment name out of the environment.yml
 RUN echo "source activate forcoastA2" > /root/.bashrc
-RUN apt-get update && apt-get -y install gcc
+RUN apt-get update && apt-get -y install gcc && apt-get -y install imagemagick
 RUN pip install wget pyyaml telepot argparse requests
 
 ENV PATH /usr/src/app:$PATH
