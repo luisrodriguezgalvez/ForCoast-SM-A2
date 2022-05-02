@@ -33,8 +33,8 @@
       timestep: hourly
       method: http
       datafiles:
-      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmddHH).nc
-      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/FORECAST/galway_bay_(YYYYmmddHH).nc
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmddHH)_AN.nc
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/FORECAST/galway_bay_(YYYYmmddHH)_FC.nc
       datafiles_examples:
       - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_2021052600.nc
 - 2:
