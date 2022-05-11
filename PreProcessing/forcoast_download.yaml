@@ -1,0 +1,115 @@
+- 0:
+      pilot: eforie
+      service_module: A2
+      download_data: yes
+      download_grid: yes
+      outpath: /usr/src/app/data
+      time_offset: 1
+      timestep: daily
+      method: http
+      datafiles:
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/1_NWS_1h_grid_W_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/2_EFORIE_1h_grid_W_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_U_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_V_(YYYYmmdd).nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/(YYYY)/(mm)/BS_1h_grid_W_(YYYYmmdd).nc
+
+      gridfiles:
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/2_mesh_mask.nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/1_mesh_mask.nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask.nc
+      - http://46.105.99.42:8080/thredds/fileServer/PHY/mesh_mask_59levels.nc
+- 1:
+      pilot: galway
+      service_module: A2
+      download_data: yes
+      download_grid: no
+      outpath: /usr/src/app/data
+      time_offset: 1
+      timestep: hourly
+      method: http
+      datafiles:
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_(YYYYmmddHH)_AN.nc
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/FORECAST/galway_bay_(YYYYmmddHH)_FC.nc
+      datafiles_examples:
+      - http://milas.marine.ie/thredds/fileServer/IMI_ROMS_HYDRO/GALWAY_BAY_NATIVE_70M_8L_1H/ANALYSIS/galway_bay_2021052600.nc
+- 2:
+      pilot: anyone
+      service_module: F2
+      download_data: no
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      timestep: daily
+      method: ftp
+      username: lrodriguez1
+      password: Forcoast2019#
+      datafiles:
+       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-DT.nc
+      datafiles_examples:
+       - https://podaac-opendap.jpl.nasa.gov/opendap/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/2021/008/20210108090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
+       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/2021/05/20210530_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc    
+       - ftp://nrt.cmems-du.eu/Core/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2/2021/05/20210511120000-UKMO-L4_GHRSST-SSTfnd-OSTIA-GLOB-v02.0-fv02.0.nc 
+       - https://podaac-opendap.jpl.nasa.gov/opendap/allData/ghrsst/data/GDS2/L4/GLOB/JPL/MUR/v4.1/(YYYY)/(ddd)/(YYYYmmddHH)0000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc
+       - ftp://nrt.cmems-du.eu/Core/OCEANCOLOUR_GLO_CHL_L4_NRT_OBSERVATIONS_009_033/dataset-oc-glo-bio-multi-l4-chl_interpolated_4km_daily-rt/(YYYY)/(mm)/(YYYYmmdd)_d-ACRI-L4-CHL-MULTI_4KM-GLO-NRT.nc
+       - ftp://nrt.cmems-du.eu/Core/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2/(YYYY)/(mm)/(YYYYmmdd)090000-UKMO-L4_GHRSST-SSTfnd-OSTIA-GLOB-v02.0-fv02.0.nc
+- 3:
+      pilot: limford
+      service_module: A5
+      download_data: no
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      timestep: daily
+      method: ftp
+      username: forcoast
+      password: DGHMTSJ.kumvvhf
+      datafiles:
+       - ftp://ftp.dmi.dk/outgoing/lim_hr_nest_wsid(YYYYmmdd)00.nc
+      datafiles_examples:
+       - ftp://ftp.dmi.dk/outgoing/lim_hr_nest_wsid2021052900.nc
+- 4:
+      pilot: anyone
+      service_module: F2
+      download_data: no
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      timestep: daily
+      forcast: yes
+      method: ftp
+      username: lrodriguez1
+      password: Forcoast2019#
+      datafiles:
+       - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
+       - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-d/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-MFSeas5-MEDATL-b(YYYYmmdd_T0)_fc-sv06.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-BSeas3-BS-b(YYYYmmdd_T0)_fc-sv09.00.nc
+      datafiles_examples:
+       - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/2021/06/metoffice_foam1_amm15_NWS_SST_b20210624_hi20210625.nc
+       - ftp://nrt.cmems-du.eu/Core/NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013/MetO-NWS-PHY-hi-SST/(YYYY)/(mm)/metoffice_foam1_amm15_NWS_SST_b(YYYYmmdd_T0)_hi(YYYYmmdd).nc
+       - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-h/2021/06/20210625_h-CMCC--TEMP-MFSeas5-MEDATL-b20210623_fc-sv06.00.nc --> hourly data
+       - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-d/2021/06/20210626_d-CMCC--TEMP-MFSeas5-MEDATL-b20210623_fc-sv06.00.nc --> daily data
+       - ftp://nrt.cmems-du.eu/Core/MEDSEA_ANALYSIS_FORECAST_PHY_006_013/med00-cmcc-tem-an-fc-d/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-MFSeas5-MEDATL-b(YYYYmmdd_T0)_fc-sv06.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/2021/06/20210628_d-CMCC--TEMP-BSeas3-BS-b20210624_fc-sv09.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSIS_FORECAST_PHYS_007_001/bs-cmcc-tem-an-fc-d_Prev/(YYYY)/(mm)/(YYYYmmdd)_d-CMCC--TEMP-BSeas3-BS-b(YYYYmmdd_T0)_fc-sv09.00.nc
+       - ftp://nrt.cmems-du.eu/Core/BLKSEA_ANALYSISFORECAST_PHY_007_001/bs-cmcc-tem-an-fc-d/2021/06/20210625_d-CMCC--TEMP-BSeas4-BS-b20210624_fc-sv10.00.nc
+- 5:
+      pilot: northernadriatic
+      # I do not think this data can be used for A2, something like A1/A5 seems more suitable
+      service_module: A2
+      download_data: no
+      download_grid: no
+      outpath: c:\data
+      time_offset: 0
+      timestep: daily
+      method: urllib
+      datafiles:
+      # We may need to implement a way to retrive the .nc files from a specific hour
+      - https://dsecho.inogs.it/thredds/fileServer/testForcoast/2021-07-01/ave.(YYYYmmdd)-00:00:00.pH.nc
+      datafiles_examples:
+      - http://dsecho.inogs.it/thredds/fileServer/testForcoast/ave.20210207-00:00:00.pH.nc
+

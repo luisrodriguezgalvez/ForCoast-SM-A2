@@ -41,8 +41,7 @@ def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
         dimensions['tmask'] = {'lon': 'glamf', 'lat': 'gphif', 'depth': 'depthw'}
         
     indices=kwargs.get('indices',None)
-    cs=kwargs.get('chunksize','Auto')
-    fieldset=FieldSet.from_nemo(filenames, variables, dimensions, indices=indices, field_chunksize=cs)
+    fieldset=FieldSet.from_nemo(filenames, variables, dimensions, indices=indices)
         # this includes: fieldset.W.set_scaling_factor(-1.)
     
     if run3D:
@@ -54,6 +53,38 @@ def get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,**kwargs):
     return fieldset
 
 
+# get_mohid_fields : create a new fieldset from MOHID currents (all variables co-located)
+def get_mohid_fields(files,**kwargs):
+    filenames = {'U': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
+                 'V': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}}
+    variables =  { 'U': 'u', 'V': 'v'}
+    dimensions = {'U':       {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'},
+                  'V':       {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'}}
+    run3D=kwargs.get('run3D',True)
+    if run3D:
+        filenames['W'] = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}
+        variables['W'] = 'velocity_W'
+        dimensions['W']= {'lon': 'lon', 'lat': 'lat', 'depth': 'depth' , 'time': 'time'}
+    beaching=kwargs.get('beaching',0)
+    if beaching>0:
+        filenames['tmask'] = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files[0]}
+        variables['tmask'] = 'mask'
+        dimensions['tmask']= {'lon': 'lon', 'lat': 'lat', 'depth': 'depth'}
+
+    indices=kwargs.get('indices',None)
+    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
+
+    fieldset.U.vmin=-1.0e14
+    fieldset.V.vmin=-1.0e14
+    
+    if run3D:
+        fieldset.W.vmin=-1e+14
+        def compute(fieldset):
+            fieldset.W.data[:, 0, :, :] = 0.
+        fieldset.compute_on_defer = compute
+
+        
+    return fieldset
 
 
 # get_roms_fields : create a new fieldset from ROMS currents
@@ -68,52 +99,54 @@ def get_roms_fields(files,**kwargs):
                      'depth_w':{'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
                      'U': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
                      'V': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
-                     'W': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}}
+                     'W': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
+                      'zeta':   {'lon': files[0], 'lat': files[0],                    'data': files}}
         variables =  { 'depth_u': 'z_u', 'depth_v': 'z_v', 'depth_w': 'z_w',
-                       'U': 'u', 'V': 'v', 'W': 'w'}
+                       'U': 'u', 'V': 'v', 'W': 'w',
+                       'zeta': 'zeta'}
         dimensions = {'depth_u': {'lon': 'lon_u',   'lat': 'lat_u',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'depth_v': {'lon': 'lon_v',   'lat': 'lat_v',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'depth_w': {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'U':       {'lon': 'lon_u',   'lat': 'lat_u',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
                       'V':       {'lon': 'lon_v',   'lat': 'lat_v',   'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'W':       {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'}}
+                      'W':       {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
+                      'zeta':    {'lon': 'lon_rho', 'lat': 'lat_rho',                           'time': 'ocean_time'}}
     else:
-        variables =  { 'depth_u': 'z_u',
-                       'depth_v': 'z_v',
-                       'U': 'u',
-                       'V': 'v'}
-        dimensions = {'depth_u': {'lon': 'lon_u', 'lat': 'lat_u', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'depth_v': {'lon': 'lon_v', 'lat': 'lat_v', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'U':       {'lon': 'lon_u', 'lat': 'lat_u', 'depth': 'not_yet_set'  , 'time': 'ocean_time'},
-                      'V':       {'lon': 'lon_v', 'lat': 'lat_v', 'depth': 'not_yet_set'  , 'time': 'ocean_time'}}
+        filenames = {'U': {'lon': files[0], 'lat': files[0], 'data': files},
+                     'V': {'lon': files[0], 'lat': files[0], 'data': files}}
+        variables =  { 'U': 'ubar',
+                       'V': 'vbar'}
+        dimensions = {'U':       {'lon': 'lon_u', 'lat': 'lat_u', 'time': 'ocean_time'},
+                      'V':       {'lon': 'lon_v', 'lat': 'lat_v', 'time': 'ocean_time'}}
 
     vdiffusion=kwargs.get('vdiffusion',False)
     if vdiffusion:
-        filenames['Kz']  = {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': wfiles}
-        variables['Kz']  = 'votkeavs'
-        dimensions['Kz'] = {'lon': 'glamt', 'lat': 'gphit', 'depth': 'depthw', 'time': 'time_counter'}
-        filenames['Kz_EVD']  = {'lon': mesh_mask, 'lat': mesh_mask, 'depth': wfiles[0], 'data': wfiles}
-        variables['Kz_EVD']  = 'voevdavt'
-        dimensions['Kz_EVD'] = {'lon': 'glamf', 'lat': 'gphif', 'depth': 'depthw', 'time': 'time_counter'}
+        filenames['Kz']  = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}
+        variables['Kz']  = 'AKt'
+        dimensions['Kz'] = {'lon': 'lon_rho', 'lat': 'lat_rho', 'depth': 'not_yet_set', 'time': 'ocean_time'}
 
     beaching=kwargs.get('beaching',0)
     if beaching>0:
-        filenames['tmask']     = {'lon': files[0], 'lat': files[0], 'data': files[0]} # tmask is a 2D field (no depth dimension)
+        filenames['tmask']     = {'lon': files[0], 'lat': files[0], 'data': files[0]} # using s-layers, the mask is a 2D field (no depth dimension)
         variables['tmask']     = 'mask_rho'
         dimensions['tmask']    = {'lon': 'lon_rho', 'lat': 'lat_rho'}
         
     indices=kwargs.get('indices',None)
-    cs=kwargs.get('chunksize','Auto')
-    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, field_chunksize=cs, vmax=1.0e36) #allow_time_extrapolation=True
-    fieldset.U.set_depth_from_field(fieldset.depth_u)
-    fieldset.V.set_depth_from_field(fieldset.depth_v)
+    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
+    if run3D:
+        fieldset.U.set_depth_from_field(fieldset.depth_u)
+        fieldset.V.set_depth_from_field(fieldset.depth_v)
     fieldset.U.vmax=1.0e36
     fieldset.V.vmax=1.0e36
     if run3D:
         fieldset.W.set_depth_from_field(fieldset.depth_w)
         fieldset.W.vmax=1.0e36
-        #fieldset.add_field(Field('bottom_depth', fieldset.W.depth[-1, :, :], lon=lons, lat=lats))
-        #fieldset.add_field(Field('top_depth', fieldset.U.depth[0, :, :], lon=lons, lat=lats))
+
+    #fieldset.depth_u.set_scaling_factor(-1)
+    #fieldset.depth_v.set_scaling_factor(-1)
+    #if run3D:
+    #    fieldset.depth_w.set_scaling_factor(-1)
+    #    fieldset.W.set_scaling_factor(-1)
 
     return fieldset
 
@@ -128,8 +161,7 @@ def get_wav_fields(fieldset,path,run3D,mesh_mask,**kwargs):
     filenames  = {'Us': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames},   'Vs': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames}}
     dimensions = {'Us': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'},'Vs': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'}}
     variables  = {'Us': 'VSDX', 'Vs': 'VSDY'}
-    cs=kwargs.get('chunksize','Auto')
-    fs=FieldSet.from_netcdf(filenames,variables,dimensions, field_chunksize=cs)
+    fs=FieldSet.from_netcdf(filenames,variables,dimensions)
     fieldset.add_field(fs.Us) ; fieldset.Us.units = GeographicPolar()
     fieldset.add_field(fs.Vs) ; fieldset.Vs.units = Geographic()
     UVs = VectorField('UVs', fs.Us, fs.Vs)
@@ -139,7 +171,7 @@ def get_wav_fields(fieldset,path,run3D,mesh_mask,**kwargs):
         filenames  = {'WMP': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames},   'SWH': {'lon': mesh_mask, 'lat': mesh_mask, 'data': fnames}}
         dimensions = {'WMP': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'},'SWH': {'lon': 'longitude', 'lat': 'latitude', 'time': 'time'}}
         variables  = {'WMP': 'VTM10', 'SWH': 'VHM0'}
-        W3Dfs = FieldSet.from_netcdf(filenames,variables,dimensions,field_chunksize=cs)
+        W3Dfs = FieldSet.from_netcdf(filenames,variables,dimensions)
         fieldset.add_field(W3Dfs.WMP)
         fieldset.add_field(W3Dfs.SWH)
     

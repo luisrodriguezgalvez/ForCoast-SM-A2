@@ -4,7 +4,7 @@
 
 from parcels import FieldSet, Field, NestedField, VectorField
 from parcels import ParticleSet, ParticleFile, Variable, ErrorCode
-from parcels import JITParticle #, ScipyParticle
+from parcels import JITParticle, ScipyParticle
 from parcels import plotTrajectoriesFile
 from parcels.kernel import Kernel
 from glob import glob
@@ -15,9 +15,42 @@ import time
 from forcoast_loaders import *
 from forcoast_kernels import *
 import yaml
+import os
+from pathlib import Path
+import sys, getopt
+
+argv = sys.argv[1:]
+
+try:
+    opts, args = getopt.getopt(argv,"hy:T:p:d:s:",["yamlfile="])
+except getopt.GetoptError:
+    print ('forcoast.py -y <yamlfile>')
+    sys.exit(2)
+for opt, arg in opts:
+    if opt == '-h':
+        print ('forcoast.py -y <yamlfile>')
+        sys.exit()
+    elif opt in ("-y", "--yamlfile"):
+        USER_YAML_FILE = arg
+    elif opt in ("-T"):
+        startdate = arg
+    elif opt in ("-p"):
+        period = arg 
+    elif opt in ("-d"):
+        datadir = arg
+    elif opt in ("-s"):
+        source = arg
+#    elif opt in ("-t"):
+#        target = arg
+
+config_file = '../usr/' + USER_YAML_FILE + '/config/config.yaml'
 
 # OPTIONS
+<<<<<<< HEAD
+with open(config_file) as f:
+=======
 with open('pilot5.yaml') as f:
+>>>>>>> main
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 if options['run3D']:
@@ -25,6 +58,63 @@ if options['run3D']:
 else:
     print('running in 2D')
 
+<<<<<<< HEAD
+# Replace options from yml file with options passed from command line
+if not argv:
+    print("Use input from yml file")
+else:
+    print("Replace selected input with input from command line")
+
+    if "startdate" in locals():
+        options['sdate'] = startdate
+    if "period" in locals():
+        options['simlength'] = int(period)
+    # options['PHY_path'] = argv[5]
+    if "source" in locals():
+        # Parse pollutant release coordinate from command line
+        bbox_input_temp = str(source)[1:-2]
+        bbox_input_temp = bbox_input_temp.split(',')
+        bbox_input_x0 = [float(bbox_input_temp[0])]
+        bbox_input_y0 = [float(bbox_input_temp[1])]
+        bbox_input_z0 = [float(bbox_input_temp[2])]
+        options['x0'] = bbox_input_x0
+        options['y0'] = bbox_input_y0
+        options['z0'] = bbox_input_z0
+#    if "target" in locals():
+#        # Parse target area coordinates from command line
+#        bbox_output_temp = str(target)[1:-1]
+#        bbox_output_temp = bbox_output_temp.split(',')
+#        bbox_output_left = float(bbox_output_temp[0])
+#        bbox_output_bottom = float(bbox_output_temp[1])
+#        bbox_output_right = float(bbox_output_temp[2])
+#        bbox_output_top = float(bbox_output_temp[3])
+#        bbox_output_targetx = [bbox_output_left,bbox_output_right]
+#        bbox_output_targety = [bbox_output_bottom,bbox_output_top]
+#        options['targetx'] = bbox_output_targetx
+#        options['targety'] = bbox_output_targety
+    if "datadir" in locals():
+        options['PHY_path'] = datadir
+
+print("Pollutant release coordinates: x0=" + str(options['x0']) + ', y0=' + str(options['y0']) + ', z0=' + str(options['z0']))
+#print("Target area coordinates: targetx=" + str(options['targetx']) + ', targety=' + str(options['targety']))
+print("Start date: " + options['sdate'])
+print("Simulation length: " + str(options['simlength']))
+print("Data directory: " + options['PHY_path'])
+
+# LOADING EULERIAN VELOCITY FIELD
+if options['PHY_type']=='ROMS':
+  romsfiles=sorted(glob(options['PHY_path']+options['files']))
+  fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+elif options['PHY_type']=='MOHID':
+  files=sorted(glob(options['PHY_path']+options['files']))
+  fieldset=get_mohid_fields(files,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+elif options['PHY_type']=='NEMO':
+  #print('PHY PATH:', options['PHY_path'])
+  nbgrids=len(options['mfiles'])
+  myfieldset=[]
+  for g in range(nbgrids):
+    print('PHY PATH:', options['PHY_path']+options['wfiles'][g])
+=======
 # LOADING EULERIAN VELOCITY FIELD
 if options['PHY_type']=='ROMS':
   romsfiles=sorted(glob(options['PHY_path']))
@@ -34,15 +124,22 @@ elif options['PHY_type']=='NEMO':
   nbgrids=len(options['mfiles'])
   myfieldset=[]
   for g in range(nbgrids):
+>>>>>>> main
     ufiles = sorted(glob(options['PHY_path']+options['ufiles'][g]))
     vfiles = sorted(glob(options['PHY_path']+options['vfiles'][g]))
     wfiles = sorted(glob(options['PHY_path']+options['wfiles'][g]))
     mesh_mask = options['PHY_path'] + options['mfiles'][g]
     indices = {'lon': range(options['range_i1'][g],options['range_i2'][g]), 'lat': range(options['range_j1'][g],options['range_j2'][g])} # NEMO puts zero along the (ghost) boundaries
     if options['range_i2'][g]>0:
+<<<<<<< HEAD
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+    else:
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D']                ,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+=======
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
     else:
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+>>>>>>> main
       
   if options['nesting']==True:
     print('using ',nbgrids,' nested grids')
@@ -134,7 +231,7 @@ pset = ParticleSet.from_list(fieldset=fieldset, pclass=ForCoastParticle,
 if options['stokes']:
     kernels = pset.Kernel(Dbl_AdvectionRK4_3D_clumsy) if options['run3D'] else pset.Kernel(Dbl_AdvectionRK4)
 else:
-    kernels = pset.Kernel(AdvectionRK4_3D) if options['run3D'] else pset.Kernel(AdvectionRK4, delete_cfiles=False)
+    kernels = pset.Kernel(AdvectionRK4_3D) if options['run3D'] else pset.Kernel(AdvectionRK4) # delete_cfiles=False
 
 if options['hdiffusion']:
     print('Using horizontal diffusion')
@@ -149,7 +246,11 @@ if options['beaching']==1:
     print('Freezing beached particles')
     kernels += Frozenbeach
     if options['experiment']=="Eforie":
+<<<<<<< HEAD
+       c_includefile = path.join('parcels/c_kernels/crossdike1.h') # path.dirname(__file__)
+=======
        c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
+>>>>>>> main
 elif options['beaching']==2:
     print('Un-beaching beached particles')
     if (options['run3D']):
@@ -159,7 +260,11 @@ elif options['beaching']==2:
           kernels += Unbeaching3D_roms
     kernels += Unbeaching2D
     if options['experiment']=="Eforie":
+<<<<<<< HEAD
+       c_includefile = path.join('parcels/c_kernels/crossdike2.h') # path.dirname(__file__),
+=======
        c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
+>>>>>>> main
 # prevent cross-dike
 if options['experiment']=="Eforie" and options['beaching']>0:
     with open(c_includefile,'r') as f:
@@ -187,6 +292,10 @@ output_file.close()
 
 
 # POST-TREATMENT DETECTION : this is de-activated, move to Arthur's post-processing code
+<<<<<<< HEAD
+'''
+=======
+>>>>>>> main
 if options['detection']:
     import xarray as xr
     print("Particle detection in target area")
@@ -232,5 +341,9 @@ elif options['experiment']=='Galway':
   z=data_xarray['z'].values;
   ax2.plot(x.T,z.T)
   plt.show()
+<<<<<<< HEAD
+'''
+=======
 
+>>>>>>> main
 

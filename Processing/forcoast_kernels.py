@@ -256,7 +256,7 @@ def DiffusionZ(particule, fieldset, time):
     if (particle.beached==0):
         dWz = ParcelsRandom.uniform(-1., 1.) * math.sqrt(math.fabs(particle.dt) * 3)
         
-        dz = min(0.9*particle.depth, fieldset.dres)
+        dz = min(abs(0.9*particle.depth), fieldset.dres)
         Kzp1 = fieldset.Kz[time, particle.depth + dz, particle.lat, particle.lon] - fieldset.Kz_EVD[time, particle.depth + dz, particle.lat, particle.lon]
         Kzm1 = fieldset.Kz[time, particle.depth - dz, particle.lat, particle.lon] - fieldset.Kz_EVD[time, particle.depth - dz, particle.lat, particle.lon]
         dKdz = (Kzp1 - Kzm1) / (2 * dz)
@@ -277,6 +277,31 @@ def decay(particle, fieldset, time):
 def DeleteParticle(particle, fieldset, time):
     print("Particle [%d] lost !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
     particle.delete()
+<<<<<<< HEAD
+def DeleteParticle1(particle, fieldset, time):  # to use with ROMS, this is through-surface error
+    zeta=fieldset.zeta[time,0,particle.lat,particle.lon]
+    print("Particle [%d] through surface (%g) !! (%g %g %g %g)" % (particle.id, zeta, particle.lon, particle.lat, particle.depth, particle.time))
+    particle.ErrorIterations += 1
+    particle.depth=zeta-(particle.ErrorIterations*0.02)
+    if particle.ErrorIterations>100:
+        print("Dropped particle 2cm, more than 100 times: deleting particle")
+        particle.delete()
+def DeleteParticle2(particle, fieldset, time):  # to use with ROMS, this is below-bottom or in-land error
+    if particle.ErrorIterations<0: # we already dropped the particule, relocated it, tried Euler, still failed
+        print("The particle was dropped into the ground, relocated, advected using Euler, and still failed: delete it")
+        particle.delete()
+    elif particle.ErrorIterations>1: # we dropped the particle multiple times and finally pushed it into the ground
+        print("We lowered the particle so much that it ended up into the ground: going back to previous position")
+        particle.lon=particle.prevlon
+        particle.lat=particle.prevlat      # actually we would need prevprev{lon,lat,dep}
+        particle.depth=particle.prevdep   
+        particle.ErrorIterations*=-1
+    else:
+        zeta=fieldset.zeta[time,0,particle.lat,particle.lon]
+        print("Particle [%d] strangely lost (zeta=%g) !! (%g %g %g %g)" % (particle.id, zeta, particle.lon, particle.lat, particle.depth, particle.time))
+        particle.depth=zeta-0.1 # in ROMS z-axis is positive upward, depths are negative, and adding 0.1 means 0.1m towards the top, away from the sea bottom
+        particle.ErrorIterations=-1
+=======
 def DeleteParticle1(particle, fieldset, time):
     print("Particle [%d] out-of-bounds !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
     particle.delete()
@@ -284,6 +309,7 @@ def DeleteParticle2(particle, fieldset, time):
     print("Particle [%d] through surface !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
     particle.depth=-0.1
 
+>>>>>>> main
 
 def Frozenbeach(particle,fieldset,time):
     # northsea: if u<1e-14 and v<1e-14 --> update part.lon and lat : advect using pre-computed unbeaching velocity
