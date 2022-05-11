@@ -46,7 +46,11 @@ for opt, arg in opts:
 config_file = '../usr/' + USER_YAML_FILE + '/config/config.yaml'
 
 # OPTIONS
+<<<<<<< HEAD
 with open(config_file) as f:
+=======
+with open('pilot5.yaml') as f:
+>>>>>>> main
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 if options['run3D']:
@@ -54,6 +58,7 @@ if options['run3D']:
 else:
     print('running in 2D')
 
+<<<<<<< HEAD
 # Replace options from yml file with options passed from command line
 if not argv:
     print("Use input from yml file")
@@ -109,15 +114,32 @@ elif options['PHY_type']=='NEMO':
   myfieldset=[]
   for g in range(nbgrids):
     print('PHY PATH:', options['PHY_path']+options['wfiles'][g])
+=======
+# LOADING EULERIAN VELOCITY FIELD
+if options['PHY_type']=='ROMS':
+  romsfiles=sorted(glob(options['PHY_path']))
+  fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+elif options['PHY_type']=='NEMO':
+
+  nbgrids=len(options['mfiles'])
+  myfieldset=[]
+  for g in range(nbgrids):
+>>>>>>> main
     ufiles = sorted(glob(options['PHY_path']+options['ufiles'][g]))
     vfiles = sorted(glob(options['PHY_path']+options['vfiles'][g]))
     wfiles = sorted(glob(options['PHY_path']+options['wfiles'][g]))
     mesh_mask = options['PHY_path'] + options['mfiles'][g]
     indices = {'lon': range(options['range_i1'][g],options['range_i2'][g]), 'lat': range(options['range_j1'][g],options['range_j2'][g])} # NEMO puts zero along the (ghost) boundaries
     if options['range_i2'][g]>0:
+<<<<<<< HEAD
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
     else:
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D']                ,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+=======
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+    else:
+      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+>>>>>>> main
       
   if options['nesting']==True:
     print('using ',nbgrids,' nested grids')
@@ -224,7 +246,11 @@ if options['beaching']==1:
     print('Freezing beached particles')
     kernels += Frozenbeach
     if options['experiment']=="Eforie":
+<<<<<<< HEAD
        c_includefile = path.join('parcels/c_kernels/crossdike1.h') # path.dirname(__file__)
+=======
+       c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
+>>>>>>> main
 elif options['beaching']==2:
     print('Un-beaching beached particles')
     if (options['run3D']):
@@ -234,7 +260,11 @@ elif options['beaching']==2:
           kernels += Unbeaching3D_roms
     kernels += Unbeaching2D
     if options['experiment']=="Eforie":
+<<<<<<< HEAD
        c_includefile = path.join('parcels/c_kernels/crossdike2.h') # path.dirname(__file__),
+=======
+       c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
+>>>>>>> main
 # prevent cross-dike
 if options['experiment']=="Eforie" and options['beaching']>0:
     with open(c_includefile,'r') as f:
@@ -262,7 +292,10 @@ output_file.close()
 
 
 # POST-TREATMENT DETECTION : this is de-activated, move to Arthur's post-processing code
+<<<<<<< HEAD
 '''
+=======
+>>>>>>> main
 if options['detection']:
     import xarray as xr
     print("Particle detection in target area")
@@ -308,5 +341,9 @@ elif options['experiment']=='Galway':
   z=data_xarray['z'].values;
   ax2.plot(x.T,z.T)
   plt.show()
+<<<<<<< HEAD
 '''
+=======
+
+>>>>>>> main
 
