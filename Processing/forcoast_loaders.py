@@ -86,6 +86,38 @@ def get_mohid_fields(files,**kwargs):
         
     return fieldset
 
+# get_MIT_fields: create a new fieldset from MIGgcm currents (all variables co-located)
+def get_MIT_fields(files,maskfile,**kwargs):
+    filenames = {'U': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files},
+                 'V': {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}}
+    variables =  { 'U': 'uo', 'V': 'vo'}
+    dimensions = {'U':       {'lon': 'longitude', 'lat': 'latitude', 'depth': 'depth' , 'time': 'time'},
+                  'V':       {'lon': 'longitude', 'lat': 'latitude', 'depth': 'depth' , 'time': 'time'}}
+    run3D=kwargs.get('run3D',True)
+    if run3D:
+        filenames['W'] = {'lon': files[0], 'lat': files[0], 'depth': files[0], 'data': files}
+        variables['W'] = 'wo'
+        dimensions['W']= {'lon': 'longitude', 'latitude': 'lat', 'depth': 'depth' , 'time': 'time'}
+    beaching=kwargs.get('beaching',0)
+    if beaching>0:
+        filenames['tmask'] = {'lon': maskfile, 'lat': maskfile, 'depth': maskfile, 'data': maskfile}
+        variables['tmask'] = 'mask'
+        dimensions['tmask']= {'lon': 'longitude', 'lat': 'latitude', 'depth': 'depth'}
+
+    indices=kwargs.get('indices',None)
+    fieldset=FieldSet.from_netcdf(filenames, variables, dimensions, indices=indices, vmax=1.0e36) #allow_time_extrapolation=True
+    
+    fieldset.U.vmin=-1.0e14
+    fieldset.V.vmin=-1.0e14
+
+    if run3D:
+        fieldset.W.vmin=-1e+14
+        def compute(fieldset):
+            fieldset.W.data[:, 0, :, :] = 0.
+        fieldset.compute_on_defer = compute
+
+    return fieldset
+
 
 # get_roms_fields : create a new fieldset from ROMS currents
 #     grids are time-varying

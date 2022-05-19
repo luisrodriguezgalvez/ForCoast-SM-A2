@@ -46,11 +46,7 @@ for opt, arg in opts:
 config_file = '../usr/' + USER_YAML_FILE + '/config/config.yaml'
 
 # OPTIONS
-<<<<<<< HEAD
 with open(config_file) as f:
-=======
-with open('pilot5.yaml') as f:
->>>>>>> main
   options=yaml.load(f,Loader=yaml.Loader)
 npart=options['npart']
 if options['run3D']:
@@ -58,7 +54,7 @@ if options['run3D']:
 else:
     print('running in 2D')
 
-<<<<<<< HEAD
+##<<<<<<< HEAD
 # Replace options from yml file with options passed from command line
 if not argv:
     print("Use input from yml file")
@@ -114,32 +110,32 @@ elif options['PHY_type']=='NEMO':
   myfieldset=[]
   for g in range(nbgrids):
     print('PHY PATH:', options['PHY_path']+options['wfiles'][g])
-=======
-# LOADING EULERIAN VELOCITY FIELD
-if options['PHY_type']=='ROMS':
-  romsfiles=sorted(glob(options['PHY_path']))
-  fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
-elif options['PHY_type']=='NEMO':
-
-  nbgrids=len(options['mfiles'])
-  myfieldset=[]
-  for g in range(nbgrids):
->>>>>>> main
+##=======
+### LOADING EULERIAN VELOCITY FIELD
+##if options['PHY_type']=='ROMS':
+##  romsfiles=sorted(glob(options['PHY_path']))
+##  fieldset=get_roms_fields(romsfiles,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
+##elif options['PHY_type']=='NEMO':
+##
+##  nbgrids=len(options['mfiles'])
+##  myfieldset=[]
+##  for g in range(nbgrids):
+##>>>>>>> main
     ufiles = sorted(glob(options['PHY_path']+options['ufiles'][g]))
     vfiles = sorted(glob(options['PHY_path']+options['vfiles'][g]))
     wfiles = sorted(glob(options['PHY_path']+options['wfiles'][g]))
     mesh_mask = options['PHY_path'] + options['mfiles'][g]
     indices = {'lon': range(options['range_i1'][g],options['range_i2'][g]), 'lat': range(options['range_j1'][g],options['range_j2'][g])} # NEMO puts zero along the (ghost) boundaries
     if options['range_i2'][g]>0:
-<<<<<<< HEAD
+##<<<<<<< HEAD
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
     else:
       myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D']                ,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
-=======
-      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
-    else:
-      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
->>>>>>> main
+##=======
+##      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],indices=indices,chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+##    else:
+##      myfieldset.append(get_nemo_fields(ufiles,vfiles,wfiles,mesh_mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching']))
+##>>>>>>> main
       
   if options['nesting']==True:
     print('using ',nbgrids,' nested grids')
@@ -246,11 +242,11 @@ if options['beaching']==1:
     print('Freezing beached particles')
     kernels += Frozenbeach
     if options['experiment']=="Eforie":
-<<<<<<< HEAD
+##<<<<<<< HEAD
        c_includefile = path.join('parcels/c_kernels/crossdike1.h') # path.dirname(__file__)
-=======
-       c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
->>>>>>> main
+##=======
+##       c_includefile = path.join('c_kernels/crossdike1.h') # path.dirname(__file__)
+##>>>>>>> main
 elif options['beaching']==2:
     print('Un-beaching beached particles')
     if (options['run3D']):
@@ -260,11 +256,11 @@ elif options['beaching']==2:
           kernels += Unbeaching3D_roms
     kernels += Unbeaching2D
     if options['experiment']=="Eforie":
-<<<<<<< HEAD
+##<<<<<<< HEAD
        c_includefile = path.join('parcels/c_kernels/crossdike2.h') # path.dirname(__file__),
-=======
-       c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
->>>>>>> main
+##=======
+##       c_includefile = path.join('c_kernels/crossdike2.h') # path.dirname(__file__),
+##>>>>>>> main
 # prevent cross-dike
 if options['experiment']=="Eforie" and options['beaching']>0:
     with open(c_includefile,'r') as f:
@@ -291,59 +287,4 @@ t1=time.time() ; totaltime=t1-t0 ; print("computing time :",totaltime)
 output_file.close()
 
 
-# POST-TREATMENT DETECTION : this is de-activated, move to Arthur's post-processing code
-<<<<<<< HEAD
-'''
-=======
->>>>>>> main
-if options['detection']:
-    import xarray as xr
-    print("Particle detection in target area")
-    events=0
-    out = xr.open_dataset(options['out_filename'])
-    timecount=np.size(out.lon.values,0)
-    partcount=np.size(out.lon.values,1)
-    for p in range(0,partcount-1):
-        for t in range(0,timecount-1):
-            if options['targetx'][0]<=out.lon.values[t,p]<=options['targetx'][1] and options['targety'][0]<=out.lat.values[t,p]<=options['targety'][1]:
-                print('target attained ',t,p)
-
-
-                
-## PLOT PARCELS RESULTS as simple diagnostic
-import xarray as xr
-import matplotlib.pyplot as plt
-data_xarray = xr.open_dataset(output_file.name)  # trajectories, time, lon, lat, z, prevlon, prevlat, prevdep, beached [obs=timestep, traj=particle]
-if options['experiment']=='Eforie':
-  x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
-  fig,ax=plt.subplots(1,3)
-  for sp in range(3):
-    dx=fieldset.gridset.grids[sp].lon[1]-fieldset.gridset.grids[sp].lon[0] ; dy=fieldset.gridset.grids[sp].lat[1]-fieldset.gridset.grids[sp].lat[0]
-    ax[sp].pcolormesh(fieldset.gridset.grids[sp].lon-(dx/2), fieldset.gridset.grids[sp].lat-(dy/2), fieldset.tmask[sp].data[0,0,:,:], shading='auto')
-    ax[sp].plot(x.T,y.T)
-    #plot dikes
-    ax[sp].plot(np.array([28.671237945556641,28.673706054687500,28.673706054687500,28.676176071166992,28.681114196777344,28.681114196777344,28.700866699218750,28.700866699218750,28.703336715698242,28.703336715698242,28.705804824829102,28.705804824829102]),np.array([44.150741577148438,44.148887634277344,44.141479492187500,44.141479492187500,44.137775421142578,44.135925292968750,44.121109008789062,44.117404937744141,44.115554809570312,44.113704681396484,44.111850738525391,44.110000610351562]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.688522338867188,28.690990447998047,28.690990447998047,28.693460464477539]),np.array([44.328517913818359,44.326667785644531,44.324813842773438,44.322963714599609]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.644077301025391,28.646545410156250,28.649015426635742]),np.array([44.219257354736328,44.221111297607422,44.219257354736328]),linewidth=3,color='green')
-    ax[sp].plot(np.array([28.663829803466797,28.668767929077148]),np.array([44.182220458984375,44.178516387939453]),linewidth=3,color='green')
-    ax[sp].axis('equal')
-    #ax[sp]._viewLim(Bbox([[np.min(fieldset.gridset.grids[sp].lon),np.max(fieldset.gridset.grids[sp].lon)],[np.min(fieldset.gridset.grids[sp].lat),np.max(fieldset.gridset.grids[sp].lat)]]))
-  plt.show()
-elif options['experiment']=='Galway':
-  fig, (ax1, ax2) = plt.subplots(1, 2)
-  x=data_xarray['lon'].values ; y=data_xarray['lat'].values ;
-  #dx=fieldset.gridset.grids[0].lon[1]-fieldset.gridset.grids[0].lon[0] ; dy=fieldset.gridset.grids[0].lat[1]-fieldset.gridset.grids[0].lat[0]
-  if options['beaching']>0:
-    ax1.pcolormesh(fieldset.tmask.lon, fieldset.tmask.lat, fieldset.tmask.data[0,:,:], shading='auto')
-  ax1.plot(x.T,y.T)   # transpose
-  ax1.axis('equal')
-  #ax[0]._viewLim(Bbox([[np.min(fieldset.gridset.grids[0].lon),np.max(fieldset.gridset.grids[0].lon)],[np.min(fieldset.gridset.grids[0].lat),np.max(fieldset.gridset.grids[0].lat)]]))
-  z=data_xarray['z'].values;
-  ax2.plot(x.T,z.T)
-  plt.show()
-<<<<<<< HEAD
-'''
-=======
-
->>>>>>> main
 

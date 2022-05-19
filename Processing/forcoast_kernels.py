@@ -277,7 +277,6 @@ def decay(particle, fieldset, time):
 def DeleteParticle(particle, fieldset, time):
     print("Particle [%d] lost !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
     particle.delete()
-<<<<<<< HEAD
 def DeleteParticle1(particle, fieldset, time):  # to use with ROMS, this is through-surface error
     zeta=fieldset.zeta[time,0,particle.lat,particle.lon]
     print("Particle [%d] through surface (%g) !! (%g %g %g %g)" % (particle.id, zeta, particle.lon, particle.lat, particle.depth, particle.time))
@@ -301,15 +300,6 @@ def DeleteParticle2(particle, fieldset, time):  # to use with ROMS, this is belo
         print("Particle [%d] strangely lost (zeta=%g) !! (%g %g %g %g)" % (particle.id, zeta, particle.lon, particle.lat, particle.depth, particle.time))
         particle.depth=zeta-0.1 # in ROMS z-axis is positive upward, depths are negative, and adding 0.1 means 0.1m towards the top, away from the sea bottom
         particle.ErrorIterations=-1
-=======
-def DeleteParticle1(particle, fieldset, time):
-    print("Particle [%d] out-of-bounds !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
-    particle.delete()
-def DeleteParticle2(particle, fieldset, time):
-    print("Particle [%d] through surface !! (%g %g %g %g)" % (particle.id, particle.lon, particle.lat, particle.depth, particle.time))
-    particle.depth=-0.1
-
->>>>>>> main
 
 def Frozenbeach(particle,fieldset,time):
     # northsea: if u<1e-14 and v<1e-14 --> update part.lon and lat : advect using pre-computed unbeaching velocity
