@@ -112,7 +112,9 @@ with open(USER_YAML_FILE) as f:
     fname         = '../usr/'+data['username'] +'/output/test_'+str(sourcecount)+'.nc'
     figdir        = '../usr/'+data['username'] +'/output/target_' + str(targetcount)+'_source_' + str(sourcecount)+'/'
     coastlinefile = '../usr/'+data['username'] +'/config/coastlines/lines.shp'
-
+    if not os.path.isfile(coastlinefile):
+        coastlinefile=None
+    
 ## ## ## Upon service subsription, such files should be downloaded and stored  ## ## ##
 # To Get high res coastlines.
 # https://clouds.eos.ubc.ca/~phil/courses/atsc301/coursebuild/html/hires_map.html
