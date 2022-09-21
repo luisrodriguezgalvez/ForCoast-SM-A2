@@ -104,6 +104,7 @@ elif options['PHY_type']=='MOHID':
   fieldset=get_mohid_fields(files,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 elif options['PHY_type']=='MITgcm':
   files=sorted(glob(options['PHY_path']+options['files']))
+  print(files)
   mask=options['PHY_path']+options['mask']
   fieldset=get_MIT_fields(files,mask,run3D=options['run3D'],chunksize=False,vdiffusion=options['vdiffusion'],beaching=options['beaching'])
 elif options['PHY_type']=='NEMO':

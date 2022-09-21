@@ -1,3 +1,5 @@
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved.
+
 import functools
 from ctypes import c_double
 from ctypes import c_float

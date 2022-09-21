@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved.
+
 # Example: ./run_py.sh eforie 2022-03-02 3
 
 # Example: ./run_py.sh eforie 2022-03-02 3 github config source target datadir

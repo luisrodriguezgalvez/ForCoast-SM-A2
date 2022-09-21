@@ -1,3 +1,5 @@
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved
+
 import _ctypes
 import inspect
 import math  # noqa

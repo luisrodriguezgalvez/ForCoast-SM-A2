@@ -1,3 +1,5 @@
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved.
+
 # ForCoast loader : loads netcdf files from NEMO, from CMEMS WAV, ...
 
 from parcels import FieldSet, Field, NestedField, VectorField, ParticleFile, ParticleSet, JITParticle, Variable

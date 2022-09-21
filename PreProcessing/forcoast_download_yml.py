@@ -1,3 +1,5 @@
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved
+
 # Download input data for service modules and pilot areas
 
 # Input arguments:

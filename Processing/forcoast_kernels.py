@@ -1,3 +1,5 @@
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved.
+
 # Custom kernels for ForCoast Service Module
 import math
 import parcels.rng as ParcelsRandom

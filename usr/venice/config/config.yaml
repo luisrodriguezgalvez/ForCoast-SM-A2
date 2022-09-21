@@ -25,7 +25,7 @@ through_surface: False
 # INPUT FILES
 PHY_path: "../../../data/venice/"        # AC -> should be removed from config file
 PHY_type: "MITgcm"
-files: "*_h-OGS--RFVL-MITgcmBFM-pilot8-b*_sm-v01.nc"
+files: "*_h-OGS--RFVL-MITgcmBFM-pilot8-b*-v01.nc"
 mask: "mask.nc"
 
 WAV_path: "../nothing/here/"       # AC -> should be removed from config file

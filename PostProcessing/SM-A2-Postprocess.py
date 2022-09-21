@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved
+
 # coding: utf-8
 
 # # ForCoast SM-A2 Post-processing routines

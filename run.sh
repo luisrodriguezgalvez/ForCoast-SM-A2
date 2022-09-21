@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#(C) Copyright FORCOAST H2020 project under Grant No. 870465. All rights reserved.
+
 # Example: run.sh eforie 2021-09-20 10 [28.6803,44.2201] [28.6611,44.0535,28.6617,44.0553] 
 # Example: run.sh eforie 2021-09-20 10 [28.7303,44.2201] [28.6611,44.0535,28.6617,44.0553]
 
