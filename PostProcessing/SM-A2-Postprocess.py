@@ -71,6 +71,7 @@ from datetime import datetime
 
 from cartopy.io import shapereader
 from cartopy.feature import NaturalEarthFeature
+from cartopy.mpl.ticker import LongitudeLocator, LatitudeLocator
 import cartopy.crs as ccrs
 import cartopy.io.img_tiles as cimgt
 request = cimgt.OSM()
@@ -175,25 +176,41 @@ def start_axes(title, extent, fig=None, sp=None, fast=fast):
     if fig is None:
         fig = plt.figure(figsize=(13, 5))        
     if sp is None:
-        ax = fig.add_axes([0.01, 0.01, 0.85, 0.9],projection=ccrs.PlateCarree())
+        ax = fig.add_axes([0.14, 0.01, 0.75, 0.9],projection=ccrs.PlateCarree())
+        
     else:
         ax = fig.add_subplot(sp,projection=ccrs.PlateCarree())
-            
+
     ax.set_extent(extent)
     #ax.gridlines()
     if not fast:
         ax.add_image(request, 10, interpolation='spline36', regrid_shape=2000)
     
-    if not fast and coastlinefile is not None:
-        shape_project=ccrs.PlateCarree()
-        shp = shapereader.Reader(coastlinefile)
-        for record, geometry in zip(shp.records(), shp.geometries()):
-            ax.add_geometries([geometry], shape_project,facecolor="none",edgecolor='black',lw=1)
-    else:
-        ax.coastlines(resolution='10m')
+    ### Currently does not work, might fix later
+
+    # if not fast and coastlinefile is not None:
+    #     shape_project=ccrs.PlateCarree()
+    #     shp = shapereader.Reader(coastlinefile)
+    #     for geometry in shp.geometries():
+    #         ax.add_geometries([geometry], shape_project,facecolor="none",edgecolor='black',lw=1)
+    # else:
+    #     ax.coastlines(resolution='10m')
+
+        
     #ax.set_xlim(-6, 36.5), ax.set_ylim(30, 46)
     #ax.set_aspect("equal")
     ax.set_title(title)
+    grid = ax.gridlines(crs=ccrs.PlateCarree(), \
+                        draw_labels=True, \
+                        linestyle='--')
+    grid.xlocater = LongitudeLocator(nbins=4)
+    grid.ylocator = LatitudeLocator(nbins=4)
+    grid.xlabel_style = {'size': 7, 'color': 'black'}
+    grid.ylabel_style = {'size': 7, 'color': 'black'}
+    grid.left_labels=True
+    grid.right_labels=False
+    grid.top_labels=False
+    grid.bottom_labels=True
     #ax.gridlines(xlocs=range(25,42,1), ylocs=range(40,48,1),draw_labels=True)#
     return ax
 
@@ -390,7 +407,7 @@ ns_per_hour = np.timedelta64(1, 'h') # nanoseconds in an hour
 outputdt = delta(hours=outtimestep)
 
 timerange = np.arange(np.nanmin(data_xarray['time'].values),
-                      np.nanmax(data_xarray['time'].values)+np.timedelta64(outputdt), 
+                      np.nanmax(data_xarray['time'].values),#+np.timedelta64(outputdt), 
                       outputdt) # timerange in nanoseconds
 
 
@@ -442,7 +459,7 @@ agesplot       = [ a if a.any() else nans for a in ages ] #if len(a)>0 ]
 
 relninsideplot = relninside# [ r for r,a in zip(relninside, ages) if len(a)>0 ]
 
-fig = plt.figure(figsize=(10,4))
+fig = plt.figure(figsize=(4,4))
 ax=fig.add_axes([0.05,0.1,.85,.8], title = 'Influence of '+sourcenames[sourcecount] )
 
 vpl = ax.violinplot(agesplot,showmedians=False, showextrema=False)
@@ -535,7 +552,7 @@ if not skipmap :
         ax1.scatter(sourcepoint[0],sourcepoint[1], 25,  'red')
         ax1.text( sourcepoint[0],sourcepoint[1],  sourcenames[sourcecount])
 
-        cax = fig.add_axes([0.88,0.1,0.04,0.8])
+        cax = fig.add_axes([0.90,0.1,0.04,0.8])
         norm = colors.Normalize(vmin=0, vmax=5)
         cb = colorbar.ColorbarBase(cax, cmap=cm.get_cmap('viridis_r'), norm=norm, orientation='vertical')
         cax.set_title('Age [d]')
@@ -670,6 +687,7 @@ ccolors = [cmap(r/100) for r in riskc]
 ax.bar( agesc_mid, np.array(riskc), width=agesc_int , color =  ccolors )
 
 ax.set_xticks(agesc)
+ax.xaxis.set_tick_params(rotation=45, labelsize=7)
 ax.set_ylim([0,100])
 ax.set_yticks([0,50,100])
 ax.set_yticklabels(['Null','Mid','Strong'])
