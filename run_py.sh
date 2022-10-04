@@ -134,8 +134,8 @@ while read -r t; do
 	    else
 	        echo "-->Skipped"
         fi
-        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.png ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.png
-        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.gif ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.gif
+        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.mp4 ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.mp4
+        cp ../usr/$1/output/target_${targetcount}_source_${sourcecount}/bulletin.webm ../usr/$1/output/bulletin_target_${targetcount}_source_${sourcecount}.webm
         sourcecount=`expr $sourcecount + 1`
     done < "../usr/$1/config/sources.txt"
     targetcount=`expr $targetcount + 1`
@@ -151,8 +151,7 @@ echo '###########'
 if [ "$#" -eq 10 ]; then
 
     cd ../Telegram
-    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.png -M file
-    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.gif -M document
+    python send_bulletin.py -T $9 -C ${10} -B /usr/src/app/usr/$1/output/target_0_source_0/bulletin.mp4 -M video
 
 fi
 
@@ -163,5 +162,10 @@ echo $INITIAL_DIR
 cd ..
 ls
 
-cp /usr/src/app/usr/$1/output/bulletin*png $INITIAL_DIR
-cp /usr/src/app/usr/$1/output/bulletin*png ${DATA_DIR}
+cp /usr/src/app/usr/$1/output/bulletin*mp4 $INITIAL_DIR/bulletin.mp4
+cp /usr/src/app/usr/$1/output/bulletin*mp4 ${DATA_DIR}/bulletin.mp4
+
+cp /usr/src/app/usr/$1/output/bulletin*webm $INITIAL_DIR/bulletin.webm
+cp /usr/src/app/usr/$1/output/bulletin*webm ${DATA_DIR}/bulletin.webm
+
+rm /usr/src/app/data/*.nc
