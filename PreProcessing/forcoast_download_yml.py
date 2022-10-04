@@ -26,6 +26,7 @@ from pathlib import Path
 # from urllib import request
 import urllib.request
 import ssl
+import glob
 
 def download_files(SM,pilot,T0,period,download_dict,datadir):
 
@@ -53,8 +54,13 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 				elif download_dict[ii][ii]['timestep'] == "hourly":
 					delta = datetime.timedelta(hours=1)
 				# Some data required 1 day before and after actual time window to be downloaded
-				start_date = T0 - datetime.timedelta(days=download_dict[ii][ii]['time_offset'])
+				# For this service, no past date-offset is required. Uncommment below to enable again.
+				if download_dict[ii][ii]['pilot'] == "eforie":
+					start_date = T0 - datetime.timedelta(days=1)
+				else:
+					start_date = T0
 				end_date = start_date + datetime.timedelta(days=int(period)) + datetime.timedelta(days=download_dict[ii][ii]['time_offset'])
+				today = datetime.datetime.now()
 
 				if download_dict[ii][ii]['timestep'] == "daily":
 					duration = end_date - start_date
@@ -79,6 +85,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 						url = url.replace('(mm)',start_date.strftime("%m"))
 						url = url.replace('(ddd)',str(day_of_year))
 						url = url.replace('(month_length)',str(calendar.monthrange(start_date.year, start_date.month)[1]))
+						url = url.replace('(Today)',today.strftime("%Y%m%d"))
 
 						print(url)
 
@@ -98,7 +105,7 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 							filename = url.split("/")[-1:]
 							output_filename = Path(download_dict[ii][ii]['outpath'] + '/' + filename[0].replace(':',''))
 
-							if os.path.isfile(output_filename) == False:
+							if len(glob.glob(outfile)) > 0:
 								with urllib.request.urlopen(url, context=ctx) as u, \
 									open(output_filename, 'wb') as f:
 									f.write(u.read())
@@ -111,15 +118,37 @@ def download_files(SM,pilot,T0,period,download_dict,datadir):
 							print('\n wget: getting: ' + url)
 
 							try:
-								outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0]
+								if download_dict[ii][ii]['pilot'] == "venice":
+									outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0][0:8] + "*"
+								else:
+									outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0]
 								print(outfile)
-								if os.path.isfile(outfile) == False:
+								if len(glob.glob(outfile)) == 0:
 									filename = wget.download(url, out=download_dict[ii][ii]['outpath'])
 								else:
 									print('File already downloaded')
 
 							except:
-								print('File is not available, check available dates at source')
+								print('File is not available')
+								#In the case of NorhternAdriatic, the data might be in a different location
+								if download_dict[ii][ii]['pilot'] == "venice":
+									print('trying yesterdays data')
+									try:
+										url = download_dict[ii][ii]['datafiles'][jj]
+										
+										url_yesterday = url.replace('(YYYYmmdd)',(start_date).strftime("%Y%m%d"))
+										url_yesterday = url_yesterday.replace('(Today)',(today-datetime.timedelta(days=1)).strftime("%Y%m%d"))
+										print('\n wget: getting: ' + url_yesterday)
+										#Remove last charachters, as it is not important if file is fc or sm
+										outfile = download_dict[ii][ii]['outpath'] + "/" + filename[0][0:8] + "*"
+										print(outfile)
+										if os.path.isfile(outfile) == False:
+											filename = wget.download(url_yesterday, out=download_dict[ii][ii]['outpath'])
+										else:
+											print('File already downloaded')
+									
+									except:
+										print('Yesterday also not available')
 
 						# Switching to ftplib since wget doesnt seem to support username and password properly
 						elif download_dict[ii][ii]['method'] == "ftp":

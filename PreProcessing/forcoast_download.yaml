@@ -29,7 +29,7 @@
       download_data: yes
       download_grid: no
       outpath: /usr/src/app/data
-      time_offset: 1
+      time_offset: 0
       timestep: hourly
       method: http
       datafiles:
@@ -119,8 +119,8 @@
       download_grid: no
       outpath: /usr/src/app/data
       time_offset: 0
-      timestep: hourly
+      timestep: daily
       method: http
       datafiles:
-      - https://dsecho.ogs.it/thredds/fileServer/pilot8/model_OGS/RFVL/(YYYYmmdd_T0)/(YYYYmmdd)_h-OGS--RFVL-MITgcmBFM-pilot8-b(YYYYmmdd_T0)_sm-v01.nc
-      - https://dsecho.ogs.it/thredds/fileServer/pilot8/model_OGS/RFVL/(YYYYmmdd_T0)/(YYYYmmdd)_h-OGS--RFVL-MITgcmBFM-pilot8-b(YYYYmmdd_T0)_fc-v01.nc
+      - https://dsecho.ogs.it/thredds/fileServer/pilot8/model_OGS/RFVL/(Today)/(YYYYmmdd)_h-OGS--RFVL-MITgcmBFM-pilot8-b(Today)_sm-v01.nc
+      - https://dsecho.ogs.it/thredds/fileServer/pilot8/model_OGS/RFVL/(Today)/(YYYYmmdd)_h-OGS--RFVL-MITgcmBFM-pilot8-b(Today)_fc-v01.nc
