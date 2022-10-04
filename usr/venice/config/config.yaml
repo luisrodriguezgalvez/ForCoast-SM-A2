@@ -1,7 +1,7 @@
 username: venice
 
 # Sources coordinates are given in sources.txt - having this separate is required for bash interpretation.
-sourcenames: ['Po1']
+sourcenames: ['Source']
 
 # Targets coordinates are given in targets.txt - having this separate is required for bash interpretation.
 targetnames: ['My farm']
@@ -9,7 +9,7 @@ targetnames: ['My farm']
 #########################
 # INPUTS FOR PROCESSING #
 #########################
-experiment: Venice
+experiment: 'Northern Adriatic'
 
 # GENERAL OPTIONS
 run3D: False
