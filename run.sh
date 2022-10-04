@@ -34,4 +34,3 @@ echo $INITIAL_DIR
 cd ..
 ls
 
-cp /usr/src/app/data/*.png $INITIAL_DIR

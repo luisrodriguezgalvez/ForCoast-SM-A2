@@ -31,6 +31,8 @@ def send_bulletin(token,chat_id,bulletin,method):
 	elif method == 'document':
 		print(chat_id)
 		bot.sendDocument(chat_id, document=open(file, 'rb'))
+	elif method == 'video':
+		bot.sendVideo(chat_id, video=open(file, 'rb'))
 	else:
 		with open('bulletin.png', 'wb') as f:
 			f.write(requests.get(file).content)
