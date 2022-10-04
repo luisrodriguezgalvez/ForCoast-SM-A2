@@ -8,6 +8,42 @@ import sys, getopt
 import yaml
 import csv
 import glob
+import cv2
+
+def resize_width(image, width, height, new_width):
+    new_height = int((new_width/width)*height)
+    image_resize = image.resize((new_width, new_height), PIL.Image.NEAREST)
+    return image_resize, new_width, new_height
+
+def make_video(frame_folder, bull_width, bull_height):
+    images = sorted(glob.glob(f"{frame_folder}/bulletin_*.png"))
+    for i, image in enumerate(images):
+            ResizeBulletin = Image.new('RGBA', (1920, 1080), (0, 0, 0))
+            Bulletin = Image.open(image)
+            Bulletin_resize, Bulletin_resize_Width, Bulletin_resize_Height = resize_width(Bulletin, bull_width, bull_height, 1920)
+            ResizeBulletin.paste(Bulletin_resize, (0, 540 - (int(Bulletin_resize_Height/2))))
+            if i < 10:
+                ResizeBulletin.save("{}/0{}_resize.png".format(frame_folder, i), quality = 95)
+            else:
+                ResizeBulletin.save("{}/{}_resize.png".format(frame_folder, i), quality = 95)
+            
+    imagesResize = [cv2.imread(imageResize) for imageResize in sorted(glob.glob(f"{frame_folder}/*_resize.png"))]
+    if len(images) == 0:
+        print("No frames for video")
+    else:
+        fourccTelegram = cv2.VideoWriter_fourcc(*'mp4v')
+        TelegramVideo = cv2.VideoWriter(frame_folder+"bulletin.mp4", fourccTelegram, 0.7, (1920, 1080))
+        print("Telegram Video Writer Initiatied")
+        for imageResize in imagesResize:
+            TelegramVideo.write(imageResize)
+        print("Telegram Video generated")
+
+        fourccWeb = cv2.VideoWriter_fourcc(*'vp80')
+        Webvideo = cv2.VideoWriter(frame_folder+"bulletin.webm", fourccWeb, 0.7, (1920, 1080))
+        print("Web Video Writer Initiatied")
+        for imageResize in imagesResize:
+            Webvideo.write(imageResize)
+        print("Web Video generated")
 
 rdate = 0
 
@@ -182,6 +218,8 @@ for ti,t in enumerate(risktab):
     # draw.text((img_violin_Width + img_map_Width - 600, img_logo_new_Height / 5), ('x = ' + str(fx0[0]) + ' ' + 'y = ' + str(fy0[0])), font=font_1,fill=(0,0,0,255))
 
     newImg.save(figdir+'bulletin_'+'%03d'%(ti)+'.png', quality = 95)
+
+make_video(figdir, (2 * margin + img_violin_Width + img_map_Width), (margin + img_logo_new_Height + img_violin_Height + img_risk_Height + img_footer_Height))
 
 
 
