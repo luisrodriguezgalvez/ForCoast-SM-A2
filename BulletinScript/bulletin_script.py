@@ -187,15 +187,47 @@ for ti,t in enumerate(risktab):
     img_logo_new_Width = int((float(img_logo.size[0]) * float(img_logo_height_percent)))
     img_logo_new = img_logo.resize((img_logo_new_Width, img_logo_new_Height), PIL.Image.NEAREST)
 
+    # Resize the violin.png
+
+    img_violin_new_Height = 500
+
+    img_violin_height_percent = (img_violin_new_Height / float(img_violin.size[1]))
+    img_violin_new_Width = int((float(img_violin.size[0]) * float(img_violin_height_percent)))
+    img_violin_new = img_violin.resize((img_violin_new_Width, img_violin_new_Height), PIL.Image.NEAREST)
+
+    # Resize the risk.png
+
+    img_risk_new_Height = 400
+
+    img_risk_height_percent = (img_risk_new_Height / float(img_risk.size[1]))
+    img_risk_new_Width = int((float(img_risk.size[0]) * float(img_risk_height_percent)))
+    img_risk_new = img_risk.resize((img_risk_new_Width, img_risk_new_Height), PIL.Image.NEAREST)
+
+    # Resize the riskchart.png
+
+    img_riskchart_new_Height = 325
+
+    img_riskchart_height_percent = (img_riskchart_new_Height / float(img_riskchart.size[1]))
+    img_riskchart_new_Width = int((float(img_riskchart.size[0]) * float(img_riskchart_height_percent )))
+    img_riskchart_new = img_riskchart.resize((img_riskchart_new_Width, img_riskchart_new_Height), PIL.Image.NEAREST)
+
+    # Resize the map.png
+
+    img_map_new_Height = 1000
+
+    img_map_height_percent = (img_map_new_Height / float(img_map.size[1]))
+    img_map_new_Width = int((float(img_map.size[0]) * float(img_map_height_percent)))
+    img_map_new = img_map.resize((img_map_new_Width, img_map_new_Height), PIL.Image.NEAREST)
+
     # Generate the new combined image
 
     newImg = Image.new('RGBA', (2 * margin + img_violin_Width + img_map_Width, margin + img_logo_new_Height + img_violin_Height + img_risk_Height + img_footer_Height), (255, 255, 255))
 
+    newImg.paste(img_risk_new     , (margin + 250                                    ,  img_logo_new_Height ))
+    newImg.paste(img_riskchart_new, (margin  + 625                      , img_logo_new_Height + img_risk_new_Height - 75))
     newImg.paste(img_logo_new , (margin                                     , margin))
-    newImg.paste(img_violin   , (margin                                      , margin + img_logo_new_Height))
-    newImg.paste(img_map      , (margin + img_violin_Width                       , margin + img_logo_new_Height))
-    newImg.paste(img_risk     , (margin                                      , margin + img_logo_new_Height + img_violin_Height))
-    newImg.paste(img_riskchart, (margin + img_violin_Width                       , margin + img_logo_new_Height + img_violin_Height))
+    newImg.paste(img_violin_new   , (margin  + 540                                   , img_logo_new_Height + img_risk_new_Height + img_riskchart_new_Height - 100 ))
+    newImg.paste(img_map_new     , (margin + img_risk_new_Width  - 200                   , int(img_map_new_Height/2) - int(img_riskchart_new_Height/2) ))
     newImg.paste(img_footer   , (margin + int((img_violin_Width + img_map_Width) / 2 - (img_footer_Width /2)), margin + img_logo_new_Height + img_violin_Height + img_risk_Height))
 
     font_path_1 = "ariali.ttf"
@@ -207,6 +239,9 @@ for ti,t in enumerate(risktab):
     font_path_3 = "arialbd.ttf"
     font_3 = ImageFont.truetype(font_path_3, 60)
 
+    font_path_4 = "arial.ttf"
+    font_4 = ImageFont.truetype(font_path_4, 25)
+
     # print("last modified: %s" % time.ctime(os.path.getmtime(file)))
     filecreated = time.ctime(os.path.getctime(figdir+'TS_violin.png'))
 
@@ -216,10 +251,10 @@ for ti,t in enumerate(risktab):
     draw.text((img_violin_Width + img_map_Width - 750, img_logo_new_Height / 2.1), ('Release date: ' + rdate), font=font_1,fill=(0,0,0,255))
     draw.text((img_violin_Width + img_map_Width - 750, img_logo_new_Height / 4), ('Area: ' + farea), font=font_1,fill=(0,0,0,255))
     # draw.text((img_violin_Width + img_map_Width - 600, img_logo_new_Height / 5), ('x = ' + str(fx0[0]) + ' ' + 'y = ' + str(fy0[0])), font=font_1,fill=(0,0,0,255))
+    draw.text((155, img_logo_new_Height + img_risk_new_Height - 150), ('The risk timeline is \ncomputed according \nto fraction of release \nreaching the site and \nthe time taken to get \nthere.'), font = font_4, fill=(0,0,0,255))
+    draw.text((155, img_logo_new_Height + img_risk_new_Height + margin + img_riskchart_new_Height + margin + 50), ('The influence of sewage\npollutant provides an \nexhaustive view on the \nfraction of release entering \nthe farm site, and time \ntaken to get there.\nThe width of the blobs \nrepresents the amount of \npollutans in the farm'), font = font_4, fill=(0,0,0,255))
+    shape_rec = [( margin + img_logo_new_Width + 180, margin + img_logo_new_Height + 50), (margin + img_logo_new_Width + img_risk_new_Width - 750,  margin + img_logo_new_Height + img_risk_new_Height + img_riskchart_new_Height - 125)]
+    draw.rectangle(shape_rec, fill = None, outline = "black")
+    newImg.save(figdir+"bulletin.png", quality = 95)
 
-    newImg.save(figdir+'bulletin_'+'%03d'%(ti)+'.png', quality = 95)
-
-make_video(figdir, (2 * margin + img_violin_Width + img_map_Width), (margin + img_logo_new_Height + img_violin_Height + img_risk_Height + img_footer_Height))
-
-
-
+make_video(figdir, (2 * margin + img_violin_new_Width + img_map_new_Width), (margin + img_logo_new_Height + img_violin_new_Height + img_risk_new_Height + img_footer_Height))
