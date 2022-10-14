@@ -19,4 +19,4 @@ This service provides a measure of the probability for farming sites to be affec
 
 ### Licence
 
-Licensed under GLP2.0
+Licensed under the Apache License, Version 2.0
