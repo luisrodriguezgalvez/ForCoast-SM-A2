@@ -675,7 +675,7 @@ for ti,t in enumerate(timerange):
 
 # Risk Panel figure
 plt.close()
-fig = plt.figure(figsize=(4,2))
+fig = plt.figure(figsize=(6,2))
 ax = fig.add_axes([0.14,0.3,.85,.5])
 
 agesc_mid = (np.array(agesc)[1:]+np.array(agesc)[:-1] )/2
